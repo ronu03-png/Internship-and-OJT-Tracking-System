@@ -134,6 +134,14 @@ accept requests from your site.
 | Render (backend) | `CLIENT_ORIGIN` | `https://your-site.netlify.app` |
 | Render (backend) | `PORT` | `4000` |
 | Netlify (frontend) | `VITE_API_URL` | `https://interntrack-api.onrender.com/api` |
+| Netlify (frontend) | `VITE_SITE_PASSWORD` *(optional)* | `mysecretdemo` |
+
+## Whole-site password gate (optional)
+
+To hide the entire site behind one shared password (useful while it's a private
+demo), set `VITE_SITE_PASSWORD` on Netlify and redeploy. Visitors must enter this
+password before the site loads. Leave it unset to disable the gate — the per-user
+login still protects all data either way.
 
 ## License
 
