@@ -6,7 +6,7 @@ const router = Router();
 
 // List placements
 router.get("/", authRequired, (req, res) => {
-  if (!["admin", "coordinator", "supervisor"].includes(req.user.role)) {
+  if (!["admin", "supervisor"].includes(req.user.role)) {
     return res.status(403).json({ error: "Forbidden" });
   }
   let query = `
@@ -22,17 +22,13 @@ router.get("/", authRequired, (req, res) => {
     query += " AND p.supervisor_id = ?";
     params.push(req.user.id);
   }
-  if (req.user.role === "coordinator" && req.user.department) {
-    query += " AND (u.department = ? OR u.department IS NULL)";
-    params.push(req.user.department);
-  }
   query += " ORDER BY p.created_at DESC";
   const rows = db.prepare(query).all(...params);
   res.json(rows);
 });
 
 // Create placement
-router.post("/", authRequired, requireRole("admin", "coordinator"), (req, res) => {
+router.post("/", authRequired, requireRole("admin", "supervisor"), (req, res) => {
   const { student_id, company_id, supervisor_id, start_date, end_date } = req.body || {};
   if (!student_id || !company_id) {
     return res.status(400).json({ error: "Student and company are required" });
@@ -52,7 +48,7 @@ router.post("/", authRequired, requireRole("admin", "coordinator"), (req, res) =
 });
 
 // Update placement status
-router.patch("/:id/status", authRequired, requireRole("admin", "coordinator", "supervisor"), (req, res) => {
+router.patch("/:id/status", authRequired, requireRole("admin", "supervisor"), (req, res) => {
   const { status } = req.body || {};
   if (!["pending", "approved", "rejected", "completed"].includes(status)) {
     return res.status(400).json({ error: "Invalid status" });

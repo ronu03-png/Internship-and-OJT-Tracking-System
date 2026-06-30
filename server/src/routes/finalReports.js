@@ -65,7 +65,7 @@ router.get("/", authRequired, (req, res) => {
   res.json(rows);
 });
 
-router.patch("/:id/review", authRequired, requireRole("supervisor", "coordinator"), (req, res) => {
+router.patch("/:id/review", authRequired, requireRole("supervisor"), (req, res) => {
   const { status } = req.body || {};
   if (!["pending", "approved", "rejected"].includes(status)) {
     return res.status(400).json({ error: "Invalid status" });

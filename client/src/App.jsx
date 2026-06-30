@@ -5,9 +5,6 @@ import { Spinner } from "./components/ui.jsx";
 
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
-import RoleSelection from "./pages/RoleSelection.jsx";
-import AccountTypeSelection from "./pages/AccountTypeSelection.jsx";
-import RegisterRole from "./pages/RegisterRole.jsx";
 import Messages from "./pages/Messages.jsx";
 import Notifications from "./pages/Notifications.jsx";
 
@@ -29,10 +26,9 @@ import AdminUsers from "./pages/admin/Users.jsx";
 import AdminAuditLogs from "./pages/admin/AuditLogs.jsx";
 import AdminSettings from "./pages/admin/Settings.jsx";
 
-import CoordinatorDashboard from "./pages/coordinator/Dashboard.jsx";
-import CoordinatorStudents from "./pages/coordinator/Students.jsx";
-import CoordinatorCompanies from "./pages/coordinator/Companies.jsx";
-import CoordinatorPlacements from "./pages/coordinator/Placements.jsx";
+import ManageStudents from "./pages/coordinator/Students.jsx";
+import ManageCompanies from "./pages/coordinator/Companies.jsx";
+import ManagePlacements from "./pages/coordinator/Placements.jsx";
 
 import InternJournals from "./pages/intern/Journals.jsx";
 import InternWeeklyReports from "./pages/intern/WeeklyReports.jsx";
@@ -57,11 +53,10 @@ function Protected({ children }) {
   return <Layout>{children}</Layout>;
 }
 
-function RoleSwitch({ intern, supervisor, coordinator, admin }) {
+function RoleSwitch({ intern, supervisor, admin }) {
   const { user } = useAuth();
   switch (user?.role) {
-    case "admin": return admin || coordinator || supervisor || intern;
-    case "coordinator": return coordinator || admin || supervisor || intern;
+    case "admin": return admin || supervisor || intern;
     case "supervisor": return supervisor || intern;
     default: return intern;
   }
@@ -73,10 +68,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Home />} />
-      <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <RoleSelection />} />
-      <Route path="/login/:role" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
-      <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <AccountTypeSelection />} />
-      <Route path="/register/:role" element={user ? <Navigate to="/dashboard" replace /> : <RegisterRole />} />
+      <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
 
       <Route
         path="/dashboard"
@@ -85,7 +77,6 @@ export default function App() {
             <RoleSwitch
               intern={<InternDashboard />}
               supervisor={<SupervisorDashboard />}
-              coordinator={<CoordinatorDashboard />}
               admin={<AdminDashboard />}
             />
           </Protected>
@@ -127,9 +118,9 @@ export default function App() {
       <Route path="/notifications" element={<Protected><Notifications /></Protected>} />
       <Route path="/interns" element={<Protected><SupervisorInterns /></Protected>} />
       <Route path="/users" element={<Protected><AdminUsers /></Protected>} />
-      <Route path="/students" element={<Protected><CoordinatorStudents /></Protected>} />
-      <Route path="/companies" element={<Protected><CoordinatorCompanies /></Protected>} />
-      <Route path="/placements" element={<Protected><CoordinatorPlacements /></Protected>} />
+      <Route path="/students" element={<Protected><ManageStudents /></Protected>} />
+      <Route path="/companies" element={<Protected><ManageCompanies /></Protected>} />
+      <Route path="/placements" element={<Protected><ManagePlacements /></Protected>} />
       <Route path="/journals" element={<Protected><RoleSwitch intern={<InternJournals />} supervisor={<SupervisorJournals />} /></Protected>} />
       <Route path="/weekly-reports" element={<Protected><RoleSwitch intern={<InternWeeklyReports />} supervisor={<SupervisorWeeklyReports />} /></Protected>} />
       <Route path="/monthly-reports" element={<Protected><RoleSwitch intern={<InternMonthlyReports />} supervisor={<SupervisorMonthlyReports />} /></Protected>} />
@@ -141,7 +132,7 @@ export default function App() {
       <Route path="/audit-logs" element={<Protected><AdminAuditLogs /></Protected>} />
       <Route path="/settings" element={<Protected><AdminSettings /></Protected>} />
 
-      <Route path="*" element={<Navigate to={loading ? "/login" : "/"} replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

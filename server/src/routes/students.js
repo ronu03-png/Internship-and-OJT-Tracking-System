@@ -6,7 +6,7 @@ const router = Router();
 
 // List all students with progress and placement info.
 router.get("/", authRequired, (req, res) => {
-  if (!["admin", "coordinator", "supervisor"].includes(req.user.role)) {
+  if (!["admin", "supervisor"].includes(req.user.role)) {
     return res.status(403).json({ error: "Forbidden" });
   }
 
@@ -20,10 +20,6 @@ router.get("/", authRequired, (req, res) => {
   if (req.user.role === "supervisor") {
     query += " AND u.supervisor_id = ?";
     params.push(req.user.id);
-  }
-  if (req.user.role === "coordinator" && req.user.department) {
-    query += " AND (u.department = ? OR u.department IS NULL)";
-    params.push(req.user.department);
   }
   query += " ORDER BY u.full_name";
 

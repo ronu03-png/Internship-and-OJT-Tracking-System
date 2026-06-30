@@ -12,8 +12,8 @@ router.get("/", authRequired, (req, res) => {
   res.json(rows);
 });
 
-// Create company (admin or coordinator)
-router.post("/", authRequired, requireRole("admin", "coordinator"), (req, res) => {
+// Create company (admin or supervisor)
+router.post("/", authRequired, requireRole("admin", "supervisor"), (req, res) => {
   const {
     name,
     address,
@@ -46,7 +46,7 @@ router.post("/", authRequired, requireRole("admin", "coordinator"), (req, res) =
 });
 
 // Update company
-router.put("/:id", authRequired, requireRole("admin", "coordinator"), (req, res) => {
+router.put("/:id", authRequired, requireRole("admin", "supervisor"), (req, res) => {
   const row = db.prepare("SELECT * FROM companies WHERE id = ?").get(req.params.id);
   if (!row) return res.status(404).json({ error: "Company not found" });
   const f = req.body || {};

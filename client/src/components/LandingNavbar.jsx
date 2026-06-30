@@ -64,7 +64,7 @@ export default function LandingNavbar() {
 
         <div className="hidden items-center gap-3 md:flex">
           <Link to="/login" className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${scrolled ? "text-slate-600 hover:bg-slate-100" : "text-slate-700 hover:bg-white/50"}`}>Sign in</Link>
-          <Link to="/register" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 hover:scale-105">Get Started</Link>
+          <Link to="/login" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 hover:scale-105">Sign In</Link>
         </div>
 
         <button onClick={() => setMobileOpen((v) => !v)} className="grid h-10 w-10 place-items-center rounded-lg text-slate-700 hover:bg-slate-100 md:hidden">
@@ -83,7 +83,7 @@ export default function LandingNavbar() {
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-slate-100 pt-3">
               <Link to="/login" onClick={() => setMobileOpen(false)} className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100">Sign in</Link>
-              <Link to="/register" onClick={() => setMobileOpen(false)} className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white text-center hover:bg-blue-700">Get Started</Link>
+              <Link to="/login" onClick={() => setMobileOpen(false)} className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white text-center hover:bg-blue-700">Sign In</Link>
             </div>
           </nav>
         </div>

@@ -32,7 +32,7 @@ router.get("/", authRequired, (req, res) => {
 });
 
 // Create evaluation for an intern
-router.post("/", authRequired, requireRole("supervisor", "coordinator", "admin"), (req, res) => {
+router.post("/", authRequired, requireRole("supervisor", "admin"), (req, res) => {
   const {
     intern_id,
     attendance,

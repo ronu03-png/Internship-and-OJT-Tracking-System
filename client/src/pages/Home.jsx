@@ -136,9 +136,6 @@ export default function Home() {
             <Link to="/login" className="group inline-flex items-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-base font-semibold text-white shadow-xl shadow-blue-200 transition hover:bg-blue-700 hover:scale-105">
               Sign In <ArrowRight size={18} className="transition group-hover:translate-x-1" />
             </Link>
-            <Link to="/register" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-7 py-3.5 text-base font-semibold text-slate-700 shadow-sm transition hover:border-blue-300 hover:text-blue-600 hover:scale-105">
-              Create Account
-            </Link>
           </div>
         </div>
 
@@ -422,7 +419,6 @@ export default function Home() {
               <h4 className="font-bold text-slate-900">Quick Links</h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
                 <li><Link to="/login" className="hover:text-blue-600">Sign In</Link></li>
-                <li><Link to="/register" className="hover:text-blue-600">Register</Link></li>
                 <li><a href="#features" className="hover:text-blue-600">Features</a></li>
                 <li><a href="#contact" className="hover:text-blue-600">Contact</a></li>
               </ul>
@@ -432,7 +428,6 @@ export default function Home() {
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
                 <li><Link to="/privacy" className="hover:text-blue-600">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="hover:text-blue-600">Terms of Service</Link></li>
-                <li><Link to="/register" className="hover:text-blue-600">Create Account</Link></li>
               </ul>
             </div>
           </div>

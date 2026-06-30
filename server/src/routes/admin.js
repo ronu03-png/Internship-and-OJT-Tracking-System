@@ -17,7 +17,7 @@ router.patch("/users/:id/status", authRequired, requireRole("admin"), (req, res)
 });
 
 // Admin stats
-router.get("/stats", authRequired, requireRole("admin", "coordinator"), (req, res) => {
+router.get("/stats", authRequired, requireRole("admin"), (req, res) => {
   const totalUsers = db.prepare("SELECT COUNT(*) AS n FROM users").get().n;
   const studentCount = db.prepare("SELECT COUNT(*) AS n FROM users WHERE role = 'intern'").get().n;
   const companyCount = db.prepare("SELECT COUNT(*) AS n FROM companies").get().n;

@@ -41,19 +41,9 @@ router.get("/supervisors", (req, res) => {
   res.json(rows);
 });
 
-// List coordinators
-router.get("/coordinators", (req, res) => {
-  const rows = db
-    .prepare(
-      "SELECT id, full_name, department FROM users WHERE role = 'coordinator' AND status = 'active' ORDER BY full_name"
-    )
-    .all();
-  res.json(rows);
-});
-
-// List all users (admin / coordinator)
+// List all users (admin only)
 router.get("/users", authRequired, (req, res) => {
-  if (!["admin", "coordinator"].includes(req.user.role)) {
+  if (req.user.role !== "admin") {
     return res.status(403).json({ error: "Forbidden" });
   }
   const rows = db
@@ -93,7 +83,7 @@ router.post("/register", (req, res) => {
   if (!full_name || !email || !password || !role) {
     return res.status(400).json({ error: "Missing required fields" });
   }
-  if (!["admin", "coordinator", "supervisor", "intern"].includes(role)) {
+  if (!["admin", "supervisor", "intern"].includes(role)) {
     return res.status(400).json({ error: "Invalid role" });
   }
 
@@ -127,7 +117,6 @@ router.post("/register", (req, res) => {
         role !== "intern" ? employee_id || null : null,
         role === "intern" ? year_level || null : null,
         role === "intern" ? section || null : null,
-        role === "coordinator" ? institution || null : null,
         role === "admin" ? username || null : null,
         role === "admin" ? security_question || null : null
       );

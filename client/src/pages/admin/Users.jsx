@@ -5,7 +5,6 @@ import { Badge, Modal, Spinner, EmptyState, PageHeader, Avatar } from "../../com
 
 const roleBadge = {
   admin: "bg-rose-100 text-rose-700 ring-rose-200",
-  coordinator: "bg-sky-100 text-sky-700 ring-sky-200",
   supervisor: "bg-amber-100 text-amber-700 ring-amber-200",
   intern: "bg-emerald-100 text-emerald-700 ring-emerald-200",
 };
@@ -136,7 +135,6 @@ export default function AdminUsers() {
             <select className="input" value={form.role} onChange={set("role")}>
               <option value="intern">Student</option>
               <option value="supervisor">Supervisor</option>
-              <option value="coordinator">Coordinator</option>
               <option value="admin">Administrator</option>
             </select>
           </div>

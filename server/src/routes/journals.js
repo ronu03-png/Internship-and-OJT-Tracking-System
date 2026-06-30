@@ -47,7 +47,7 @@ router.get("/", authRequired, (req, res) => {
 });
 
 // Supervisor reviews a journal
-router.patch("/:id/review", authRequired, requireRole("supervisor", "coordinator"), (req, res) => {
+router.patch("/:id/review", authRequired, requireRole("supervisor"), (req, res) => {
   const { status, feedback, coordinator_notes } = req.body || {};
   if (!["submitted", "approved", "rejected"].includes(status)) {
     return res.status(400).json({ error: "Invalid status" });

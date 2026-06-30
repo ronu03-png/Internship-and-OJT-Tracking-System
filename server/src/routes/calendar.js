@@ -11,7 +11,7 @@ router.get("/", authRequired, (req, res) => {
   res.json(rows);
 });
 
-router.post("/", authRequired, requireRole("admin", "coordinator"), (req, res) => {
+router.post("/", authRequired, requireRole("admin"), (req, res) => {
   const { title, type, start_date, end_date, description } = req.body || {};
   if (!title || !start_date) {
     return res.status(400).json({ error: "Title and start date are required" });
@@ -24,7 +24,7 @@ router.post("/", authRequired, requireRole("admin", "coordinator"), (req, res) =
   res.status(201).json(db.prepare("SELECT * FROM calendar_events WHERE id = ?").get(info.lastInsertRowid));
 });
 
-router.delete("/:id", authRequired, requireRole("admin", "coordinator"), (req, res) => {
+router.delete("/:id", authRequired, requireRole("admin"), (req, res) => {
   const row = db.prepare("SELECT * FROM calendar_events WHERE id = ?").get(req.params.id);
   if (!row) return res.status(404).json({ error: "Event not found" });
   db.prepare("DELETE FROM calendar_events WHERE id = ?").run(row.id);

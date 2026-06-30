@@ -71,10 +71,10 @@ function seed() {
   const admin = db.prepare("SELECT id FROM users WHERE role = 'admin' LIMIT 1").get();
   const adminId = admin ? admin.id : 1;
 
-  console.log("Seeding coordinator...");
-  const coordinator = db.prepare("INSERT INTO users (full_name, email, password_hash, role, department, phone, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))")
-    .run("Prof. Elena Rodriguez", "coordinator@demo.com", hash, "coordinator", "College of Computer Studies", "+63 912 345 6701", "active");
-  const coordinatorId = coordinator.lastInsertRowid;
+  console.log("Seeding program supervisor...");
+  const programSupervisor = db.prepare("INSERT INTO users (full_name, email, password_hash, role, department, phone, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))")
+    .run("Prof. Elena Rodriguez", "program.supervisor@demo.com", hash, "supervisor", "College of Computer Studies", "+63 912 345 6701", "active");
+  const programSupervisorId = programSupervisor.lastInsertRowid;
 
   console.log("Seeding companies and supervisors...");
   const companyIds = [];
@@ -122,7 +122,7 @@ function seed() {
     // placement
     db.prepare(
       "INSERT INTO internship_placements (student_id, company_id, supervisor_id, coordinator_id, status, start_date, end_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))"
-    ).run(studentId, companyId, supervisorId, coordinatorId, status === "completed" ? "completed" : "approved", "2026-06-01", status === "completed" ? "2026-07-15" : "2026-08-31");
+    ).run(studentId, companyId, supervisorId, programSupervisorId, status === "completed" ? "completed" : "approved", "2026-06-01", status === "completed" ? "2026-07-15" : "2026-08-31");
 
     // attendance (last 30 days)
     const baseDate = new Date("2026-06-01");
@@ -193,7 +193,7 @@ function seed() {
     { title: "Completion Ceremony", content: "The OJT completion ceremony will be held on August 31, 2026.", pinned: 0 },
   ];
   announcements.forEach((a) => {
-    db.prepare("INSERT INTO announcements (title, content, author_id, pinned, created_at) VALUES (?, ?, ?, ?, datetime('now'))").run(a.title, a.content, coordinatorId, a.pinned);
+    db.prepare("INSERT INTO announcements (title, content, author_id, pinned, created_at) VALUES (?, ?, ?, ?, datetime('now'))").run(a.title, a.content, programSupervisorId, a.pinned);
   });
 
   console.log("Seeding calendar events...");
@@ -207,15 +207,15 @@ function seed() {
   ];
   events.forEach((e) => {
     db.prepare("INSERT INTO calendar_events (title, type, start_date, end_date, description, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))")
-      .run(e.title, e.type, e.start, e.end, `${e.title} for OJT students.`, coordinatorId);
+      .run(e.title, e.type, e.start, e.end, `${e.title} for OJT students.`, programSupervisorId);
   });
 
   console.log("Seeding messages...");
   const sampleMessages = [
-    { from: coordinatorId, to: supervisorIds[0], body: "Good morning! Please review the pending evaluations this week." },
-    { from: supervisorIds[0], to: coordinatorId, body: "Noted. I will complete them by Friday." },
-    { from: coordinatorId, to: studentIds[0], body: "Please submit your missing medical certificate." },
-    { from: studentIds[0], to: coordinatorId, body: "I will upload it today, ma'am." },
+    { from: programSupervisorId, to: supervisorIds[0], body: "Good morning! Please review the pending evaluations this week." },
+    { from: supervisorIds[0], to: programSupervisorId, body: "Noted. I will complete them by Friday." },
+    { from: programSupervisorId, to: studentIds[0], body: "Please submit your missing medical certificate." },
+    { from: studentIds[0], to: programSupervisorId, body: "I will upload it today, ma'am." },
     { from: supervisorIds[1], to: studentIds[1], body: "Great job on the presentation today!" },
   ];
   sampleMessages.forEach((m) => {
@@ -237,7 +237,7 @@ function seed() {
   const entities = ["user","placement","attendance","announcement","report"];
   for (let i = 0; i < 50; i++) {
     db.prepare("INSERT INTO audit_logs (user_id, action, entity, entity_id, details, created_at) VALUES (?, ?, ?, ?, ?, datetime('now','-'||?||' minutes'))")
-      .run(rand([adminId, coordinatorId, ...supervisorIds]), rand(actions), rand(entities), randInt(1, 100), "System activity recorded", i * 30);
+      .run(rand([adminId, programSupervisorId, ...supervisorIds]), rand(actions), rand(entities), randInt(1, 100), "System activity recorded", i * 30);
   }
 
   console.log("Seeding settings...");
@@ -254,7 +254,7 @@ function seed() {
   console.log("Production demo seed complete.");
   console.log("Accounts:");
   console.log("  admin@interntrack.local / admin123");
-  console.log("  coordinator@demo.com / demo123");
+  console.log("  program.supervisor@demo.com / demo123");
   console.log("  supervisor1@demo.com / demo123");
   console.log("  student01@demo.com / demo123");
 }

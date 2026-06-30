@@ -11,15 +11,6 @@ const ROLE_META = {
     ],
     tagline: "Secure, executive-level control over the entire OJT ecosystem.",
   },
-  coordinator: {
-    gradient: "bg-gradient-to-br from-violet-700 via-indigo-700 to-violet-800",
-    highlights: [
-      { icon: Users, title: "Student Management", text: "Register students, assign courses, and track OJT eligibility." },
-      { icon: Briefcase, title: "Company & Placement", text: "Manage partner companies and assign students to supervisors." },
-      { icon: Calendar, title: "Calendar & Deadlines", text: "Post deadlines, orientations, and evaluation schedules." },
-    ],
-    tagline: "Academic coordination made simple and organized.",
-  },
   supervisor: {
     gradient: "bg-gradient-to-br from-emerald-700 via-teal-700 to-emerald-800",
     highlights: [

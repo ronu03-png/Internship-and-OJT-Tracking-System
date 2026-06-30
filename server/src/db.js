@@ -20,7 +20,7 @@ db.exec(`
     full_name     TEXT NOT NULL,
     email         TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
-    role          TEXT NOT NULL CHECK (role IN ('admin','coordinator','supervisor','intern')),
+    role          TEXT NOT NULL CHECK (role IN ('admin','supervisor','intern')),
     company_name  TEXT,
     position      TEXT,
     department    TEXT,
@@ -331,7 +331,18 @@ ensureColumn("users", "approved_hours", "INTEGER DEFAULT 0");
 ensureColumn("users", "status", "TEXT DEFAULT 'active'");
 ensureColumn("daily_journals", "skills_learned", "TEXT");
 
-// --- Migration for old role constraint (intern/supervisor only) to new 4-role set.
+// --- Migration: convert legacy coordinator accounts to supervisor accounts.
+function convertCoordinatorsToSupervisors() {
+  const tableInfo = db.prepare("PRAGMA table_info(users)").all();
+  if (!tableInfo.some((c) => c.name === "role")) return;
+  const result = db.prepare("UPDATE users SET role = 'supervisor' WHERE role = 'coordinator'").run();
+  if (result.changes > 0) {
+    console.log(`Migrated ${result.changes} coordinator account(s) to supervisor.`);
+  }
+}
+convertCoordinatorsToSupervisors();
+
+// --- Migration for old role constraint (intern/supervisor only) to new 3-role set.
 function migrateUserRoles() {
   const tableInfo = db.prepare("PRAGMA table_info(users)").all();
   if (!tableInfo.some((c) => c.name === "role")) return;
@@ -356,7 +367,7 @@ function migrateUserRoles() {
         full_name     TEXT NOT NULL,
         email         TEXT NOT NULL UNIQUE,
         password_hash TEXT NOT NULL,
-        role          TEXT NOT NULL CHECK (role IN ('admin','coordinator','supervisor','intern')),
+        role          TEXT NOT NULL CHECK (role IN ('admin','supervisor','intern')),
         company_name  TEXT,
         position      TEXT,
         department    TEXT,

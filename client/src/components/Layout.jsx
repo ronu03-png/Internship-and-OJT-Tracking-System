@@ -56,22 +56,11 @@ const SUPERVISOR_NAV = [
   { to: "/final-reports", label: "Final Reports", icon: FileCheck },
   { to: "/requirements", label: "Requirements", icon: FileCheck2 },
   { to: "/evaluations", label: "Evaluations", icon: Star },
-  { to: "/announcements", label: "Announcements", icon: Megaphone },
-  { to: "/messages", label: "Messages", icon: MessagesSquare },
-];
-
-const COORDINATOR_NAV = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/students", label: "Students", icon: Users },
   { to: "/companies", label: "Companies", icon: Building2 },
   { to: "/placements", label: "Placements", icon: Briefcase },
-  { to: "/attendance", label: "Attendance", icon: CalendarClock },
-  { to: "/reports", label: "Reports", icon: FileText },
-  { to: "/requirements", label: "Requirements", icon: FileCheck2 },
-  { to: "/messages", label: "Messages", icon: MessagesSquare },
   { to: "/announcements", label: "Announcements", icon: Megaphone },
-  { to: "/calendar", label: "Calendar", icon: CalendarDays },
-  { to: "/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/messages", label: "Messages", icon: MessagesSquare },
 ];
 
 const ADMIN_NAV = [
@@ -153,18 +142,6 @@ const ROLE_CSS_VARS = {
     "--brand-800": "#1c1917",
     "--brand-900": "#0c0a09",
   },
-  coordinator: {
-    "--brand-50": "#f5f3ff",
-    "--brand-100": "#ede9fe",
-    "--brand-200": "#ddd6fe",
-    "--brand-300": "#c4b5fd",
-    "--brand-400": "#a78bfa",
-    "--brand-500": "#8b5cf6",
-    "--brand-600": "#7c3aed",
-    "--brand-700": "#6d28d9",
-    "--brand-800": "#5b21b6",
-    "--brand-900": "#4c1d95",
-  },
   supervisor: {
     "--brand-50": "#ecfdf5",
     "--brand-100": "#d1fae5",
@@ -210,7 +187,6 @@ export default function Layout({ children }) {
 
   const navByRole = {
     admin: ADMIN_NAV,
-    coordinator: COORDINATOR_NAV,
     supervisor: SUPERVISOR_NAV,
     intern: INTERN_NAV,
   };
@@ -223,7 +199,6 @@ export default function Layout({ children }) {
 
   const portalLabel = {
     admin: "Administrator Portal",
-    coordinator: "Coordinator Portal",
     supervisor: "Supervisor Portal",
     intern: "Student Portal",
   };
@@ -232,9 +207,9 @@ export default function Layout({ children }) {
   }`;
 
   return (
-    <div className="flex min-h-screen bg-slate-50" style={roleVars}>
-      {/* Desktop sidebar */}
-      <aside className="hidden w-64 flex-col border-r border-slate-200 bg-white p-5 md:flex">
+    <div className="flex h-screen overflow-hidden bg-slate-50" style={roleVars}>
+      {/* Desktop sidebar - fixed height, scrollable only on hover when content overflows */}
+      <aside className="hidden w-64 flex-col border-r border-slate-200 bg-white p-5 md:flex h-screen overflow-y-hidden hover:overflow-y-auto">
         <div className="mb-8 mt-1">
           <Brand />
         </div>
@@ -280,7 +255,7 @@ export default function Layout({ children }) {
         </div>
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
             <button
@@ -306,7 +281,7 @@ export default function Layout({ children }) {
             <Avatar name={user?.full_name || ""} size="sm" />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-6xl flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main className="mx-auto w-full max-w-6xl flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 min-h-0">
           <div key={location.pathname} className="page-transition">{children}</div>
         </main>
       </div>

@@ -17,7 +17,7 @@ router.get("/", authRequired, (req, res) => {
 });
 
 // Create announcement
-router.post("/", authRequired, requireRole("admin", "coordinator"), (req, res) => {
+router.post("/", authRequired, requireRole("admin"), (req, res) => {
   const { title, content, pinned, attachment_url } = req.body || {};
   if (!title || !content) return res.status(400).json({ error: "Title and content are required" });
   const info = db
@@ -29,7 +29,7 @@ router.post("/", authRequired, requireRole("admin", "coordinator"), (req, res) =
 });
 
 // Delete announcement
-router.delete("/:id", authRequired, requireRole("admin", "coordinator"), (req, res) => {
+router.delete("/:id", authRequired, requireRole("admin"), (req, res) => {
   const row = db.prepare("SELECT * FROM announcements WHERE id = ?").get(req.params.id);
   if (!row) return res.status(404).json({ error: "Announcement not found" });
   db.prepare("DELETE FROM announcements WHERE id = ?").run(row.id);

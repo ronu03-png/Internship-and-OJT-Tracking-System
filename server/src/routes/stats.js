@@ -90,9 +90,9 @@ router.get("/interns", authRequired, (req, res) => {
   res.json(result);
 });
 
-// Coordinator stats
+// Overview stats (admin only)
 router.get("/coordinator", authRequired, (req, res) => {
-  if (req.user.role !== "coordinator" && req.user.role !== "admin") {
+  if (req.user.role !== "admin") {
     return res.status(403).json({ error: "Forbidden" });
   }
   const studentCount = db.prepare("SELECT COUNT(*) AS n FROM users WHERE role = 'intern'").get().n;
@@ -129,7 +129,7 @@ router.get("/coordinator", authRequired, (req, res) => {
 
 // Admin stats
 router.get("/admin", authRequired, (req, res) => {
-  if (req.user.role !== "admin" && req.user.role !== "coordinator") {
+  if (req.user.role !== "admin") {
     return res.status(403).json({ error: "Forbidden" });
   }
   const totalUsers = db.prepare("SELECT COUNT(*) AS n FROM users").get().n;
