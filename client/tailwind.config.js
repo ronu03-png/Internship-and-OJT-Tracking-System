@@ -37,7 +37,7 @@ export default {
         glow: "0 8px 40px -12px rgb(36 73 209 / 0.45)",
       },
       backgroundImage: {
-        "brand-gradient": "linear-gradient(135deg, var(--brand-600) 0%, var(--accent-600) 100%)",
+        "brand-gradient": "linear-gradient(135deg, var(--brand-600) 0%, #7c3aed 100%)",
         "brand-mesh":
           "radial-gradient(at 0% 0%, rgba(124,58,237,0.35) 0px, transparent 50%), radial-gradient(at 98% 100%, rgba(36,73,209,0.45) 0px, transparent 50%)",
       },
