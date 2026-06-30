@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InternTrack — OJTConnect Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1d4ed8;
+      --accent: #10b981;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --text: #334155;
+      --muted: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f172a;
+      color: var(--text);
+      overflow: hidden;
+    }
+    .deck {
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 4rem 5vw;
+      background: var(--light);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateX(0);
+      z-index: 1;
+    }
+    .slide.cover {
+      background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
+      color: white;
+      text-align: center;
+    }
+    .slide.cover h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .slide.cover h2 {
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+    .slide.cover .subtitle {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 2.5rem;
+    }
+    .slide.cover .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(4px);
+    }
+    .slide h2 {
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .slide h2 span {
+      color: var(--primary);
+    }
+    .content {
+      max-width: 960px;
+      width: 100%;
+    }
+    .content p, .content li {
+      font-size: clamp(1rem, 1.4vw, 1.15rem);
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .content ul {
+      list-style: none;
+      margin-top: 1rem;
+    }
+    .content ul li {
+      padding-left: 1.75rem;
+      position: relative;
+      margin-bottom: 0.75rem;
+    }
+    .content ul li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .grid {
+      display: grid;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+    }
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card h3 .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 0.5rem;
+      background: var(--primary);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .card.accent h3 .icon { background: var(--accent); }
+    .card p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .highlight-box {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    .highlight-box p {
+      color: var(--dark);
+      font-weight: 500;
+    }
+    .footer-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .progress {
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      height: 3px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+      z-index: 10;
+    }
+    .nav {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 2rem;
+      display: flex;
+      gap: 0.75rem;
+      z-index: 20;
+    }
+    .nav button {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 1.25rem;
+      color: var(--dark);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+      transition: all 0.2s;
+    }
+    .nav button:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .slide-counter {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+      z-index: 20;
+    }
+    .thumb-btn {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 7.5rem;
+      z-index: 20;
+    }
+    .fullscreen-btn {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 11.5rem;
+      z-index: 20;
+    }
+    .thumbnails {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.96);
+      border-top: 1px solid #e2e8f0;
+      padding: 0.75rem 1rem;
+      display: none;
+      gap: 0.75rem;
+      overflow-x: auto;
+      z-index: 30;
+      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+      max-height: 160px;
+    }
+    .thumbnails.open {
+      display: flex;
+    }
+    .thumb {
+      flex: 0 0 auto;
+      width: 150px;
+      height: 90px;
+      border-radius: 0.5rem;
+      border: 2px solid #e2e8f0;
+      background: white;
+      cursor: pointer;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s;
+      overflow: hidden;
+      text-align: center;
+    }
+    .thumb:hover, .thumb.active {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+    .thumb .num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .thumb .label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.2;
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    ::-webkit-scrollbar {
+      height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .thank-you {
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: white;
+    }
+    .thank-you h2 { color: white; font-size: 3rem; }
+    .thank-you p { color: rgba(255,255,255,0.85); font-size: 1.25rem; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .two-col, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .slide { padding: 2rem; }
+      .nav { right: 1rem; bottom: 1rem; }
+      .slide-counter { left: 1rem; bottom: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+
+    <!-- Slide 1: Cover -->
+    <div class="slide cover active">
+      <div class="badge">Capstone Project Presentation</div>
+      <h1>InternTrack</h1>
+      <h2>Web-Based Internship and OJT Placement & Tracking System</h2>
+      <p class="subtitle">Powered by <strong>OJTConnect</strong> — helping students find work through direct contact with companies and city offices.</p>
+      <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.7;">Presented to: HR Department, City Hall</p>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 2: Title Defense -->
+    <div class="slide">
+      <h2>Title Defense</h2>
+      <div class="content">
+        <div class="highlight-box">
+          <p><strong>Proposed Title:</strong> InternTrack: A Web-Based Internship and On-the-Job Training (OJT) Placement & Tracking System</p>
+        </div>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3><span class="icon">1</span> What it is</h3>
+            <p>A responsive web platform that connects colleges, city offices, supervisors, and students to manage internships from placement until completion.</p>
+          </div>
+          <div class="card accent">
+            <h3><span class="icon">2</span> Why it matters</h3>
+            <p>Replaces manual spreadsheets, scattered emails, and paper-based tracking with a single, real-time, role-based system.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 3: Problem Statement -->
+    <div class="slide">
+      <h2><span>Problem</span> Statement</h2>
+      <div class="content">
+        <p>Colleges and city offices still manage OJT programs through manual processes, which creates serious bottlenecks:</p>
+        <ul>
+          <li>Students struggle to find verified companies and city offices that accept OJT placements.</li>
+          <li>Supervisors and coordinators track attendance, reports, and requirements on paper or spreadsheets.</li>
+          <li>Communication is fragmented (text, email, calls), causing delays and missed requirements.</li>
+          <li>There is no centralized visibility of student progress, hours rendered, or completion status.</li>
+          <li>Approval of documents, reports, and attendance takes too long, affecting grades and deployment.</li>
+        </ul>
+        <div class="highlight-box">
+          <p>There is no unified, digital, department-based system that lets students discover openings, apply directly, and be tracked by their supervisors and coordinators throughout the internship.</p>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 4: Objectives -->
+    <div class="slide">
+      <h2>Objectives</h2>
+      <div class="content">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3><span class="icon">A</span> For Students</h3>
+            <p>Find OJT openings by department and course, contact companies directly, submit requirements, log attendance, and submit narrative/required reports.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">B</span> For Supervisors</h3>
+            <p>Post openings, review applicants, verify attendance, evaluate performance, and approve student requirements and reports.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">C</span> For Coordinators</h3>
+            <p>Monitor internship progress across departments, manage students and companies, and generate summary reports.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">D</span> For Administrators</h3>
+            <p>Configure system settings, manage users, monitor audit trails, and back up critical data.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 5: Scope -->
+    <div class="slide">
+      <h2><span>Scope</span> & Limitations</h2>
+      <div class="content">
+        <div class="two-col">
+          <div>
+            <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.2rem;">In Scope</h3>
+            <ul>
+              <li>Role-based access (Student, Supervisor, Coordinator, Admin).</li>
+              <li>Department and course-based student division.</li>
+              <li>Company opening board, applications, and placement.</li>
+              <li>Attendance logging with hours computation.</li>
+              <li>Narrative reports and OJT requirements workflow.</li>
+              <li>Messaging between students and supervisors.</li>
+              <li>Dashboards, notifications, and analytics.</li>
+              <li>Exportable reports and audit trails.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color: var(--muted); margin-bottom: 1rem; font-size: 1.2rem;">Limitations</h3>
+            <ul>
+              <li>QR and selfie attendance are optional enhancements.</li>
+              <li>Email/SMS notifications are planned for future integration.</li>
+              <li>Mobile app is out of scope; system is responsive-web.</li>
+              <li>Offline mode is not supported.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 6: Why HR Dept of City Hall -->
+    <div class="slide">
+      <h2>Why the <span>HR Department</span> of the City Hall?</h2>
+      <div class="content">
+        <p>We chose the City Hall Human Resources Department as the primary client because it is the ideal testbed for a centralized OJT placement and tracking system:</p>
+        <div class="grid grid-3">
+          <div class="card">
+            <h3><span class="icon">🏛️</span> Central Hub</h3>
+            <p>HR is the central entry point for all OJT applicants entering city government offices.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">📋</span> High Volume</h3>
+            <p>City Hall receives many OJT students from different colleges and courses every semester.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">🤝</span> Multi-Department</h3>
+            <p>Students can be deployed to various city offices (treasury, health, engineering, social services), requiring department-based matching.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">🔍</span> Supervision Need</h3>
+            <p>HR must track student attendance, required hours, and completion for endorsement and certificates.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">💡</span> Real Impact</h3>
+            <p>Digitalizing OJT management reduces paperwork, speeds up approvals, and improves public service delivery.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">🎯</span> Feasibility</h3>
+            <p>HR has clear authority, existing workflows, and a strong need for a transparent, auditable tracking system.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 7: Proposed Solution -->
+    <div class="slide">
+      <h2>Proposed <span>Solution</span></h2>
+      <div class="content">
+        <div class="highlight-box">
+          <p><strong>OJTConnect</strong> is the deployment module of InternTrack. It gives students a searchable board of OJT openings posted by companies and city offices, lets them apply directly, and then tracks their progress automatically once accepted.</p>
+        </div>
+        <div class="grid grid-3">
+          <div class="card">
+            <h3><span class="icon">1</span> Discover</h3>
+            <p>Students browse openings filtered by department and course.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">2</span> Connect</h3>
+            <p>Students apply or contact the HR/supervisor directly via email.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">3</span> Track</h3>
+            <p>Once accepted, attendance, reports, and requirements are tracked in one place.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 8: Key Features -->
+    <div class="slide">
+      <h2>Key <span>Features</span></h2>
+      <div class="content">
+        <div class="grid grid-3">
+          <div class="card">
+            <h3><span class="icon">🔐</span> Authentication</h3>
+            <p>Login, register, role-based access, remember me, and secure session management.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">📊</span> Dashboards</h3>
+            <p>Role-specific dashboards with stats, progress bars, and quick actions.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">📅</span> Attendance</h3>
+            <p>Time in/out logging, automatic hour computation, supervisor approval.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">📝</span> Reports</h3>
+            <p>Narrative reports, weekly reports, supervisor feedback, and approval flow.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">📁</span> Requirements</h3>
+            <p>Document submission (MOA, medical, resume, etc.) with status tracking.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">💬</span> Messages</h3>
+            <p>Built-in messaging between students and supervisors.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">🏢</span> Openings</h3>
+            <p>Company/city office posting board, applications, and acceptance workflow.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">📈</span> Analytics</h3>
+            <p>Progress tracking, completion rates, and exportable reports.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">🔔</span> Notifications</h3>
+            <p>Real-time alerts for approvals, rejections, and deadlines.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 9: Benefits -->
+    <div class="slide">
+      <h2>Expected <span>Benefits</span></h2>
+      <div class="content">
+        <div class="two-col">
+          <div>
+            <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.2rem;">For the City Hall</h3>
+            <ul>
+              <li>Centralized record of all OJT students deployed to city offices.</li>
+              <li>Faster verification of attendance, reports, and requirements.</li>
+              <li>Reduced paperwork and manual follow-ups.</li>
+              <li>Better coordination between HR, departments, and schools.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color: var(--accent); margin-bottom: 1rem; font-size: 1.2rem;">For Students</h3>
+            <ul>
+              <li>Easy discovery of verified OJT openings.</li>
+              <li>Direct contact with companies and supervisors.</li>
+              <li>Clear view of required hours, remaining hours, and approvals.</li>
+              <li>All documents and reports in one digital portfolio.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 10: Summary -->
+    <div class="slide">
+      <h2>Summary</h2>
+      <div class="content">
+        <div class="highlight-box">
+          <p>InternTrack with OJTConnect is a modern, responsive, and role-based web system designed to solve the OJT management problems faced by colleges and city offices. It helps students find placements, helps supervisors track progress, and helps coordinators and HR oversee the entire program efficiently.</p>
+        </div>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3><span class="icon">✓</span> Problem</h3>
+            <p>Manual, fragmented, and slow OJT management process.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">✓</span> Solution</h3>
+            <p>Unified web platform with openings, tracking, and role-based workflows.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">✓</span> Client</h3>
+            <p>HR Department of the City Hall — the central gateway for OJT deployment.</p>
+          </div>
+          <div class="card">
+            <h3><span class="icon">✓</span> Outcome</h3>
+            <p>Digital, transparent, and scalable internship tracking for the public sector.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"></div>
+    </div>
+
+    <!-- Slide 11: Thank You -->
+    <div class="slide thank-you">
+      <h2>Thank You</h2>
+      <p>We look forward to partnering with the HR Department of the City Hall<br />to modernize OJT placement and tracking.</p>
+      <p style="margin-top: 2rem; font-size: 1rem; opacity: 0.8;">Questions & Discussion</p>
+      <div class="footer-bar"></div>
+    </div>
+
+  </div>
+
+  <div class="slide-counter" id="counter">1 / 11</div>
+  <div class="nav">
+    <button onclick="prevSlide()">❮</button>
+    <button onclick="nextSlide()">❯</button>
+  </div>
+  <div class="thumb-btn">
+    <button onclick="toggleThumbnails()" title="Show slides">🎞️</button>
+  </div>
+  <div class="fullscreen-btn">
+    <button onclick="toggleFullscreen()" title="Full screen">⛶</button>
+  </div>
+
+  <div class="thumbnails" id="thumbnails"></div>
+
+  <div class="progress" id="progress"></div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const thumbnails = document.getElementById('thumbnails');
+    let current = 0;
+    const total = slides.length;
+
+    const slideLabels = [
+      "Cover", "Title Defense", "Problem Statement", "Objectives", "Scope",
+      "Why HR City Hall", "Proposed Solution", "Key Features", "Benefits", "Summary", "Thank You"
+    ];
+
+    function renderThumbnails() {
+      thumbnails.innerHTML = "";
+      slides.forEach((s, i) => {
+        const thumb = document.createElement('div');
+        thumb.className = `thumb ${i === current ? 'active' : ''}`;
+        thumb.onclick = () => { current = i; showSlide(i); };
+        thumb.innerHTML = `<div class="num">${i + 1}</div><div class="label">${slideLabels[i] || ''}</div>`;
+        thumbnails.appendChild(thumb);
+      });
+    }
+
+    function showSlide(index) {
+      slides.forEach((s, i) => s.classList.toggle('active', i === index));
+      document.getElementById('counter').textContent = `${index + 1} / ${total}`;
+      document.getElementById('progress').style.width = `${((index + 1) / total) * 100}%`;
+      renderThumbnails();
+      // keep active thumbnail visible
+      const activeThumb = thumbnails.querySelector('.thumb.active');
+      if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    function nextSlide() {
+      current = (current + 1) % total;
+      showSlide(current);
+    }
+
+    function prevSlide() {
+      current = (current - 1 + total) % total;
+      showSlide(current);
+    }
+
+    function toggleThumbnails() {
+      thumbnails.classList.toggle('open');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'f') toggleFullscreen();
+      if (e.key === 't') toggleThumbnails();
+      if (e.key === 'Escape') thumbnails.classList.remove('open');
+    });
+
+    renderThumbnails();
+    showSlide(0);
+  </script>
+</body>
+</html>

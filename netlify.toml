@@ -1,0 +1,16 @@
+# Netlify configuration for the OJT InternTrack frontend (React + Vite).
+# The base directory is the client app; Netlify builds and publishes it.
+
+[build]
+  base = "client"
+  command = "npm run build"
+  publish = "client/dist"
+
+# Single-page app: route all paths to index.html so React Router works.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Set VITE_API_URL in the Netlify dashboard (Site settings > Environment variables)
+# to your Render backend, e.g. https://interntrack-api.onrender.com/api

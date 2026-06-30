@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-50: #eef4ff;
+    --brand-100: #d9e6ff;
+    --brand-200: #bcd2ff;
+    --brand-300: #8eb4ff;
+    --brand-400: #5a8bff;
+    --brand-500: #3563eb;
+    --brand-600: #2449d1;
+    --brand-700: #1f3aa8;
+    --brand-800: #1f3485;
+    --brand-900: #1e306b;
+  }
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  /* Refined scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-300;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-400;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-brand-300 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97];
+  }
+  /* Shine sweep that animates across any button on hover */
+  .btn::after {
+    content: "";
+    @apply pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-white/25 opacity-0;
+  }
+  .btn:hover::after {
+    @apply opacity-100;
+    animation: shimmer 0.9s ease-in-out;
+  }
+  .btn-primary {
+    @apply btn bg-brand-gradient text-white shadow-glow hover:-translate-y-0.5 hover:scale-[1.02] hover:brightness-110 hover:shadow-lg;
+  }
+  .btn-ghost {
+    @apply btn border border-slate-200 bg-white text-slate-700 shadow-soft hover:-translate-y-0.5 hover:border-brand-300 hover:bg-slate-50 hover:shadow-card;
+  }
+  .btn-danger {
+    @apply btn bg-rose-600 text-white shadow-soft hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-rose-700 hover:shadow-lg;
+  }
+  .btn-success {
+    @apply btn bg-emerald-600 text-white shadow-soft hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-emerald-700 hover:shadow-lg;
+  }
+  .card {
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-card;
+  }
+  .card-interactive {
+    @apply card transition-all duration-300 ease-out hover:-translate-y-1 hover:border-brand-300 hover:shadow-glow;
+  }
+  .input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition-all duration-200 placeholder:text-slate-400 hover:border-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-600;
+  }
+  .nav-link {
+    @apply relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ease-out hover:translate-x-0.5;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-brand-gradient bg-clip-text text-transparent;
+  }
+
+  /* Scroll-reveal: hidden until .is-visible is toggled by IntersectionObserver */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Tab/page switch: slide + fade in from left to right */
+  .page-transition {
+    animation: pop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-200 ease-out hover:-translate-y-0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .page-transition,
+  .btn,
+  .btn::after {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
