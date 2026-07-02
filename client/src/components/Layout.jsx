@@ -29,6 +29,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { Avatar } from "./ui.jsx";
 import { APP_NAME, APP_TAGLINE } from "../constants.js";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const INTERN_NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
@@ -76,17 +77,17 @@ const ADMIN_NAV = [
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
-function Brand() {
+function Brand({ dark = true }) {
   return (
-    <div className="flex items-center gap-3 px-2">
+    <Link to="/" className="flex items-center gap-3 px-2">
       <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-lg ring-2 ring-white/70">
         <GraduationCap size={24} strokeWidth={2.5} />
       </div>
       <div>
-        <p className="text-base font-extrabold leading-tight tracking-tight text-slate-800">{APP_NAME}</p>
-        <p className="text-[11px] font-medium leading-tight text-slate-400">{APP_TAGLINE}</p>
+        <p className={`text-base font-extrabold leading-tight tracking-tight ${dark ? "text-white" : "text-slate-800"}`}>{APP_NAME}</p>
+        <p className={`text-[11px] font-medium leading-tight ${dark ? "text-white/70" : "text-slate-400"}`}>{APP_TAGLINE}</p>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -103,14 +104,14 @@ function NavItems({ nav, onNavigate }) {
             `nav-link group ${
               isActive
                 ? "bg-brand-50 text-brand-700 shadow-soft"
-                : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
             }`
           }
         >
           {({ isActive }) => (
             <>
               <span
-                className={`absolute left-0 h-6 w-1 rounded-r-full bg-brand-600 transition-all duration-300 ${
+                className={`absolute left-0 h-6 w-1 rounded-r-full bg-brand-500 transition-all duration-300 ${
                   isActive ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"
                 }`}
               />
@@ -131,28 +132,28 @@ function NavItems({ nav, onNavigate }) {
 
 const ROLE_CSS_VARS = {
   admin: {
-    "--brand-50": "#f5f5f4",
-    "--brand-100": "#e7e5e4",
-    "--brand-200": "#d6d3d1",
-    "--brand-300": "#a8a29e",
-    "--brand-400": "#78716c",
-    "--brand-500": "#57534e",
-    "--brand-600": "#44403c",
-    "--brand-700": "#292524",
-    "--brand-800": "#1c1917",
-    "--brand-900": "#0c0a09",
+    "--brand-50": "#eff6ff",
+    "--brand-100": "#dbeafe",
+    "--brand-200": "#bfdbfe",
+    "--brand-300": "#93c5fd",
+    "--brand-400": "#60a5fa",
+    "--brand-500": "#3b82f6",
+    "--brand-600": "#2563eb",
+    "--brand-700": "#1d4ed8",
+    "--brand-800": "#1e40af",
+    "--brand-900": "#1e3a8a",
   },
   supervisor: {
-    "--brand-50": "#ecfdf5",
-    "--brand-100": "#d1fae5",
-    "--brand-200": "#a7f3d0",
-    "--brand-300": "#6ee7b7",
-    "--brand-400": "#34d399",
-    "--brand-500": "#10b981",
-    "--brand-600": "#059669",
-    "--brand-700": "#047857",
-    "--brand-800": "#065f46",
-    "--brand-900": "#064e3b",
+    "--brand-50": "#eff6ff",
+    "--brand-100": "#dbeafe",
+    "--brand-200": "#bfdbfe",
+    "--brand-300": "#93c5fd",
+    "--brand-400": "#60a5fa",
+    "--brand-500": "#3b82f6",
+    "--brand-600": "#2563eb",
+    "--brand-700": "#1d4ed8",
+    "--brand-800": "#1e40af",
+    "--brand-900": "#1e3a8a",
   },
   intern: {
     "--brand-50": "#eff6ff",
@@ -178,11 +179,15 @@ export default function Layout({ children }) {
 
   useEffect(() => {
     if (!user) return;
-    api.get("/notifications/unread").then((res) => setUnread(res.data.count)).catch(() => {});
-    const interval = setInterval(() => {
-      api.get("/notifications/unread").then((res) => setUnread(res.data.count)).catch(() => {});
-    }, 60000);
-    return () => clearInterval(interval);
+    const fetchUnread = () => api.get("/notifications/unread").then((res) => setUnread(res.data.count)).catch(() => {});
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 60000);
+    const handleUpdate = () => fetchUnread();
+    window.addEventListener("notifications-updated", handleUpdate);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("notifications-updated", handleUpdate);
+    };
   }, [user]);
 
   const navByRole = {
@@ -207,24 +212,26 @@ export default function Layout({ children }) {
   }`;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50" style={roleVars}>
-      {/* Desktop sidebar - fixed height, scrollable only on hover when content overflows */}
-      <aside className="hidden w-64 flex-col border-r border-slate-200 bg-white p-5 md:flex h-screen overflow-y-hidden hover:overflow-y-auto">
+    <>
+      <style>{`:root { ${Object.entries(roleVars).map(([k, v]) => `${k}: ${v};`).join(" ")} }`}</style>
+      <div className="flex h-screen overflow-hidden bg-slate-50">
+        {/* Desktop sidebar - fixed height, scrollable only on hover when content overflows */}
+      <aside className="hidden w-64 flex-col border-r-2 border-blue-100 bg-white p-5 shadow-xl md:flex h-screen overflow-y-hidden hover:overflow-y-auto">
         <div className="mb-8 mt-1">
-          <Brand />
+          <Brand dark={false} />
         </div>
         <NavItems nav={nav} />
         <div className="mt-4 border-t border-slate-100 pt-4">
-          <div className="mb-2 flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5">
+          <div className="mb-2 flex items-center gap-3 rounded-xl bg-slate-100 px-3 py-2.5">
             <Avatar name={user?.full_name || ""} size="sm" />
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-slate-800">{user?.full_name}</p>
-              <p className="truncate text-xs capitalize text-slate-400">{roleLine}</p>
+              <p className="truncate text-xs capitalize text-slate-500">{roleLine}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition hover:bg-rose-50 hover:text-rose-600"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
           >
             <LogOut size={18} />
             Sign out
@@ -236,17 +243,17 @@ export default function Layout({ children }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm animate-fade-in" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 flex h-full w-72 flex-col border-r border-slate-200 bg-white p-5 animate-slide-up">
+          <aside className="absolute left-0 top-0 flex h-full w-72 flex-col border-r-2 border-blue-100 bg-white p-5 shadow-2xl animate-slide-up">
             <div className="mb-8 mt-1 flex items-center justify-between">
-              <Brand />
-              <button onClick={() => setMobileOpen(false)} className="grid h-9 w-9 place-items-center rounded-lg text-slate-400 hover:bg-slate-100">
+              <Brand dark={false} />
+              <button onClick={() => setMobileOpen(false)} className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100">
                 <X size={18} />
               </button>
             </div>
             <NavItems nav={nav} onNavigate={() => setMobileOpen(false)} />
             <button
               onClick={handleLogout}
-              className="mt-4 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition hover:bg-rose-50 hover:text-rose-600"
+              className="mt-4 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
             >
               <LogOut size={18} />
               Sign out
@@ -256,21 +263,21 @@ export default function Layout({ children }) {
       )}
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur-md sm:px-6">
+        <header className="sticky top-0 z-30 flex items-center justify-between border-b-2 border-white/30 bg-blue-600 px-4 py-3 shadow-md sm:px-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileOpen(true)}
-              className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 md:hidden"
+              className="grid h-9 w-9 place-items-center rounded-lg text-white/70 hover:bg-white/10 md:hidden"
             >
               <Menu size={20} />
             </button>
             <div>
-              <p className="text-sm font-semibold text-slate-800">{user?.full_name}</p>
-              <p className="text-xs capitalize text-slate-400">{roleLine}</p>
+              <p className="text-sm font-semibold text-white">{user?.full_name}</p>
+              <p className="text-xs capitalize text-white/70">{roleLine}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/notifications" className="relative grid h-10 w-10 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200">
+            <Link to="/notifications" className="relative grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
               <Bell size={18} />
               {unread > 0 && (
                 <span className="absolute right-1 top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
@@ -281,10 +288,21 @@ export default function Layout({ children }) {
             <Avatar name={user?.full_name || ""} size="sm" />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-6xl flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 min-h-0">
-          <div key={location.pathname} className="page-transition">{children}</div>
+        <main className="relative mx-auto w-full max-w-6xl flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 min-h-0">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ x: -40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 30, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
     </div>
+  </>
   );
 }

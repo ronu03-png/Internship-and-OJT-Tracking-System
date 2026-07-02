@@ -44,7 +44,7 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="User Management" subtitle="Create and manage administrators, coordinators, supervisors, and students.">
+      <PageHeader title="User Management" subtitle="Create and manage administrators, supervisors, and students.">
         <button className="btn-primary" onClick={() => setOpen(true)}>
           <Plus size={16} /> Add user
         </button>

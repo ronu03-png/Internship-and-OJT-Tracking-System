@@ -6,7 +6,7 @@ import { Modal, Spinner, EmptyState, PageHeader, StatCard, Badge } from "../../c
 const blank = { name: "", address: "", industry: "", email: "", phone: "", website: "", department: "", description: "", available_slots: 1 };
 const PAGE_SIZE = 9;
 
-export default function CoordinatorCompanies() {
+export default function SupervisorCompanies() {
   const [companies, setCompanies] = useState(null);
   const [search, setSearch] = useState("");
   const [industryFilter, setIndustryFilter] = useState("");

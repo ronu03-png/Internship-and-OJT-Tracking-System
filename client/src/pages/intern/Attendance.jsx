@@ -1,20 +1,50 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, CalendarClock } from "lucide-react";
+import { Plus, Trash2, CalendarClock, LogIn, LogOut, Lock, MapPin, AlertCircle } from "lucide-react";
 import api from "../../api";
 import { Badge, Modal, Spinner, EmptyState, PageHeader } from "../../components/ui.jsx";
 
 const today = () => new Date().toISOString().slice(0, 10);
+
+// Ask the browser for the current GPS position (used for geofence verification).
+function getPosition() {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) return resolve({ lat: null, lng: null });
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => resolve({ lat: null, lng: null }),
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  });
+}
 
 export default function InternAttendance() {
   const [rows, setRows] = useState(null);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ date: today(), time_in: "08:00", time_out: "17:00", remarks: "" });
   const [saving, setSaving] = useState(false);
+  const [dtr, setDtr] = useState(null);      // eligibility + today's session
+  const [punching, setPunching] = useState(false);
+  const [error, setError] = useState("");
 
   const load = () => api.get("/attendance").then((res) => setRows(res.data));
-  useEffect(() => { load(); }, []);
+  const loadDtr = () => api.get("/attendance/eligibility").then((res) => setDtr(res.data)).catch(() => {});
+  useEffect(() => { load(); loadDtr(); }, []);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  const punch = async (action) => {
+    setError("");
+    setPunching(true);
+    try {
+      const { lat, lng } = await getPosition();
+      await api.post(`/attendance/${action}`, { lat, lng });
+      await Promise.all([load(), loadDtr()]);
+    } catch (err) {
+      setError(err.response?.data?.error || "Could not record your time. Please try again.");
+    } finally {
+      setPunching(false);
+    }
+  };
 
   const submit = async () => {
     setSaving(true);
@@ -31,7 +61,7 @@ export default function InternAttendance() {
   const remove = async (id) => {
     if (!confirm("Delete this attendance record?")) return;
     await api.delete(`/attendance/${id}`);
-    load();
+    await Promise.all([load(), loadDtr()]);
   };
 
   const totalApproved = (rows || []).filter((r) => r.status === "approved").reduce((s, r) => s + r.hours, 0);
@@ -39,10 +69,62 @@ export default function InternAttendance() {
   return (
     <div className="space-y-6">
       <PageHeader title="Attendance" subtitle={`Log your daily time in and out. Approved hours: ${totalApproved}`}>
-        <button className="btn-primary" onClick={() => setOpen(true)}>
-          <Plus size={16} /> Log day
+        <button className="btn-ghost" onClick={() => setOpen(true)}>
+          <Plus size={16} /> Manual log
         </button>
       </PageHeader>
+
+      {/* DTR clock in/out panel (server-timestamped, GPS-verified) */}
+      {dtr && (
+        dtr.locked ? (
+          <div className="card flex items-start gap-3 border-amber-200 bg-amber-50 p-4">
+            <Lock size={20} className="mt-0.5 shrink-0 text-amber-600" />
+            <div>
+              <p className="font-semibold text-amber-800">Attendance locked</p>
+              <p className="text-sm text-amber-700">{dtr.reason}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="card p-5">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm text-slate-500">Server time (Asia/Manila)</p>
+                <p className="text-2xl font-bold text-slate-800">{dtr.server_time}</p>
+                <p className="text-xs text-slate-400">{dtr.server_date}</p>
+                {dtr.open_session && (
+                  <p className="mt-1 text-sm font-medium text-emerald-600">Clocked in at {dtr.open_session.time_in}</p>
+                )}
+                {dtr.today?.time_out && (
+                  <p className="mt-1 text-sm text-slate-500">Today: {dtr.today.time_in} - {dtr.today.time_out} ({dtr.today.hours}h)</p>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {dtr.can_clock_in && (
+                  <button className="btn-primary" onClick={() => punch("clock-in")} disabled={punching}>
+                    <LogIn size={16} /> {punching ? "Recording..." : "Clock In"}
+                  </button>
+                )}
+                {dtr.can_clock_out && (
+                  <button className="btn-danger" onClick={() => punch("clock-out")} disabled={punching}>
+                    <LogOut size={16} /> {punching ? "Recording..." : "Clock Out"}
+                  </button>
+                )}
+                {!dtr.can_clock_in && !dtr.can_clock_out && (
+                  <span className="text-sm font-medium text-slate-400">Attendance recorded for today</span>
+                )}
+              </div>
+            </div>
+            <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-400">
+              <MapPin size={13} /> Time is stamped by the server and your location is captured for verification. A 1-hour lunch break is deducted for shifts over 5 hours.
+            </p>
+            {error && (
+              <p className="mt-2 flex items-center gap-1.5 text-sm font-medium text-rose-600">
+                <AlertCircle size={15} /> {error}
+              </p>
+            )}
+          </div>
+        )
+      )}
 
       <div className="card overflow-hidden">
         {rows === null ? (

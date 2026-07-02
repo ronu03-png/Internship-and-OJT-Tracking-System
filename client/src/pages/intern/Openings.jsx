@@ -1,9 +1,96 @@
 import { useEffect, useState } from "react";
-import { Briefcase, MapPin, Mail, Phone, Send, Building2, GraduationCap } from "lucide-react";
+import { Briefcase, MapPin, Mail, Phone, Send, Building2, GraduationCap, Eye } from "lucide-react";
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Badge, Modal, Spinner, EmptyState, PageHeader } from "../../components/ui.jsx";
 import { DEPARTMENT_NAMES } from "../../constants.js";
+
+const SAMPLE_OPENINGS = [
+  {
+    id: -1,
+    title: "Software Development Intern",
+    company_name: "Tech Solutions Inc.",
+    supervisor_name: "Maria Santos",
+    department: "College of Computer Studies",
+    course: "BS Computer Science",
+    slots: 5,
+    location: "Quezon City",
+    description: "Work with the engineering team on web applications using React and Node.js. Great for students interested in full-stack development.",
+    contact_email: "careers@techsolutions.ph",
+    contact_phone: "0917-123-4567",
+    isSample: true,
+  },
+  {
+    id: -2,
+    title: "Marketing Assistant",
+    company_name: "Brand Builders Co.",
+    supervisor_name: "John Reyes",
+    department: "College of Business",
+    course: "BS Business Administration",
+    slots: 3,
+    location: "Makati City",
+    description: "Assist in digital marketing campaigns, content creation, and social media management.",
+    contact_email: "hr@brandbuilders.ph",
+    contact_phone: "0918-234-5678",
+    isSample: true,
+  },
+  {
+    id: -3,
+    title: "Accounting Intern",
+    company_name: "Finance Partners",
+    supervisor_name: "Anna Cruz",
+    department: "College of Accountancy",
+    course: "BS Accountancy",
+    slots: 4,
+    location: "Manila",
+    description: "Support bookkeeping, financial reporting, and audit preparation under senior accountants.",
+    contact_email: "interns@financepartners.ph",
+    contact_phone: "0919-345-6789",
+    isSample: true,
+  },
+  {
+    id: -4,
+    title: "IT Support Intern",
+    company_name: "Digital Edge",
+    supervisor_name: "Rodel Dizon",
+    department: "College of Computer Studies",
+    course: "BS Information Technology",
+    slots: 2,
+    location: "Pasig City",
+    description: "Help maintain hardware and software systems, troubleshoot user issues, and document IT procedures.",
+    contact_email: "support@digitaledge.ph",
+    contact_phone: "0920-456-7890",
+    isSample: true,
+  },
+  {
+    id: -5,
+    title: "HR Intern",
+    company_name: "People First Corp",
+    supervisor_name: "Liza Mendoza",
+    department: "College of Business",
+    course: "BS Psychology",
+    slots: 3,
+    location: "Taguig City",
+    description: "Assist in recruitment, employee onboarding, and HR records management.",
+    contact_email: "hr@peoplefirst.ph",
+    contact_phone: "0921-567-8901",
+    isSample: true,
+  },
+  {
+    id: -6,
+    title: "Graphic Design Intern",
+    company_name: "Creative Studio",
+    supervisor_name: "Paul Garcia",
+    department: "College of Arts",
+    course: "BS Multimedia Arts",
+    slots: 2,
+    location: "Quezon City",
+    description: "Create visual content for social media, marketing materials, and brand assets.",
+    contact_email: "hello@creativestudio.ph",
+    contact_phone: "0922-678-9012",
+    isSample: true,
+  },
+];
 
 export default function InternOpenings() {
   const { user } = useAuth();
@@ -15,7 +102,7 @@ export default function InternOpenings() {
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const loadOpenings = () => api.get("/openings").then((res) => setOpenings(res.data));
+  const loadOpenings = () => api.get("/openings").then((res) => setOpenings([...SAMPLE_OPENINGS, ...(res.data || [])]));
   const loadApps = () => api.get("/openings/my/applications").then((res) => setApplications(res.data));
 
   useEffect(() => {
@@ -29,6 +116,11 @@ export default function InternOpenings() {
   };
 
   const apply = async () => {
+    if (active?.isSample) {
+      alert("This is a sample opening for presentation purposes. Applying is disabled in demo mode.");
+      setActive(null);
+      return;
+    }
     setSaving(true);
     try {
       await api.post(`/openings/${active.id}/apply`, { message });
@@ -102,6 +194,7 @@ export default function InternOpenings() {
                       </p>
                     </div>
                     {o.my_application && <Badge status={o.my_application} />}
+                    {o.isSample && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">Demo</span>}
                   </div>
                   <div className="mb-3 flex flex-wrap gap-1.5 text-xs">
                     {o.department && <span className="rounded-full bg-brand-50 px-2 py-0.5 font-medium text-brand-600">{o.department}</span>}
@@ -128,6 +221,10 @@ export default function InternOpenings() {
                     {o.my_application ? (
                       <button className="btn-ghost w-full text-rose-600" onClick={() => withdraw(o.id)}>
                         Withdraw application
+                      </button>
+                    ) : o.isSample ? (
+                      <button className="btn-ghost w-full" onClick={() => openApply(o)}>
+                        <Eye size={16} /> View demo
                       </button>
                     ) : (
                       <button className="btn-primary w-full" onClick={() => openApply(o)}>
@@ -178,20 +275,28 @@ export default function InternOpenings() {
       <Modal
         open={!!active}
         onClose={() => setActive(null)}
-        title={active ? `Apply: ${active.title}` : ""}
+        title={active ? `${active.isSample ? "Demo" : "Apply"}: ${active.title}` : ""}
         footer={
           <>
-            <button className="btn-ghost" onClick={() => setActive(null)}>Cancel</button>
-            <button className="btn-primary" onClick={apply} disabled={saving}>{saving ? "Sending..." : "Send application"}</button>
+            <button className="btn-ghost" onClick={() => setActive(null)}>{active?.isSample ? "Close" : "Cancel"}</button>
+            {!active?.isSample && (
+              <button className="btn-primary" onClick={apply} disabled={saving}>{saving ? "Sending..." : "Send application"}</button>
+            )}
           </>
         }
       >
         {active && (
           <>
-            <p className="text-sm text-slate-500">
-              Sending your interest to <span className="font-semibold text-slate-700">{active.company_name || active.supervisor_name}</span>.
-              They can review your profile and accept you as an OJT intern.
-            </p>
+            {active.isSample ? (
+              <div className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
+                This is a demo opening for presentation purposes. Applying is disabled.
+              </div>
+            ) : (
+              <p className="text-sm text-slate-500">
+                Sending your interest to <span className="font-semibold text-slate-700">{active.company_name || active.supervisor_name}</span>.
+                They can review your profile and accept you as an OJT intern.
+              </p>
+            )}
             <div>
               <label className="label">Message (optional)</label>
               <textarea
@@ -199,6 +304,7 @@ export default function InternOpenings() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Introduce yourself, your course, and why you're interested..."
+                disabled={active.isSample}
               />
             </div>
           </>

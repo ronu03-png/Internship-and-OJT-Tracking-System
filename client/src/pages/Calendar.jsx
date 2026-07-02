@@ -1,10 +1,32 @@
 import { useEffect, useState } from "react";
-import { CalendarDays, Plus, Trash2, Send } from "lucide-react";
+import { CalendarDays, Plus, Trash2, Send, Calendar as CalendarIcon, Clock, Users, Sun, GraduationCap, Briefcase, PartyPopper } from "lucide-react";
 import api from "../api";
 import { useAuth } from "../context/AuthContext.jsx";
 import { Badge, Spinner, EmptyState, PageHeader, Modal } from "../components/ui.jsx";
 
 const blank = { title: "", type: "", start_date: "", end_date: "", description: "" };
+
+const TYPE_META = {
+  event: { icon: PartyPopper, label: "Event", color: "bg-purple-100 text-purple-700 ring-purple-200" },
+  deadline: { icon: Clock, label: "Deadline", color: "bg-rose-100 text-rose-700 ring-rose-200" },
+  meeting: { icon: Users, label: "Meeting", color: "bg-sky-100 text-sky-700 ring-sky-200" },
+  holiday: { icon: Sun, label: "Holiday", color: "bg-amber-100 text-amber-700 ring-amber-200" },
+  defense: { icon: GraduationCap, label: "Defense", color: "bg-emerald-100 text-emerald-700 ring-emerald-200" },
+  ceremony: { icon: CalendarIcon, label: "Ceremony", color: "bg-indigo-100 text-indigo-700 ring-indigo-200" },
+  default: { icon: Briefcase, label: "Event", color: "bg-slate-100 text-slate-700 ring-slate-200" },
+};
+
+function EventTypeBadge({ type }) {
+  const key = (type || "").toLowerCase();
+  const meta = TYPE_META[key] || TYPE_META.default;
+  const Icon = meta.icon;
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${meta.color}`}>
+      <Icon size={14} />
+      {meta.label}
+    </span>
+  );
+}
 
 export default function Calendar() {
   const { user } = useAuth();
@@ -12,7 +34,7 @@ export default function Calendar() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(blank);
   const [saving, setSaving] = useState(false);
-  const canManage = ["admin", "coordinator"].includes(user?.role);
+  const canManage = ["admin", "supervisor"].includes(user?.role);
 
   const load = () => api.get("/calendar").then((res) => setEvents(res.data));
   useEffect(() => { load(); }, []);
@@ -55,7 +77,7 @@ export default function Calendar() {
                   <p className="text-xs text-slate-400">{e.start_date}{e.end_date ? ` to ${e.end_date}` : ""}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  {e.type && <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{e.type}</span>}
+                  {e.type && <EventTypeBadge type={e.type} />}
                   {canManage && <button onClick={() => remove(e.id)} className="text-slate-400 hover:text-rose-600"><Trash2 size={16} /></button>}
                 </div>
               </div>

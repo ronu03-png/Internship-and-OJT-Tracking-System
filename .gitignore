@@ -29,3 +29,10 @@ npm-debug.log*
 
 # Temp helper scripts
 tmp_*.js
+
+# Python (reporting service)
+__pycache__/
+*.pyc
+.venv/
+reporting/.venv/
+reporting/*.xlsx

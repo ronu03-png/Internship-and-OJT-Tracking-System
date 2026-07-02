@@ -11,7 +11,7 @@
 +----------------+        |                             |        +-------------------+
                           |  - Auth                     |
 +----------------+        |  - Dashboards               |        +-------------------+
-|   Coordinator  | <----> |  - Placements               | <----> |   Database        |
+|   Supervisor  | <----> |  - Placements               | <----> |   Database        |
 |                |        |  - Attendance & Reports       |        |   (SQLite/MySQL)  |
 +----------------+        |  - Evaluations              |        +-------------------+
                           |  - Announcements & Calendar   |

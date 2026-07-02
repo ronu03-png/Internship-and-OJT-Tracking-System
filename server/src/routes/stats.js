@@ -91,7 +91,7 @@ router.get("/interns", authRequired, (req, res) => {
 });
 
 // Overview stats (admin only)
-router.get("/coordinator", authRequired, (req, res) => {
+router.get("/overview", authRequired, (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ error: "Forbidden" });
   }

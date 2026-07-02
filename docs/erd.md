@@ -9,13 +9,13 @@ users (id, full_name, email, password_hash, role, company_name, position, depart
 
 companies (id, name, logo_url, address, industry, email, phone, website, supervisor_id, department, description, available_slots, status, moa_file_url, created_at)
 
-internship_placements (id, student_id, company_id, supervisor_id, coordinator_id, status, start_date, end_date, assignment_letter_url, created_at)
+internship_placements (id, student_id, company_id, supervisor_id, Supervisor_id, status, start_date, end_date, assignment_letter_url, created_at)
 
 attendance (id, intern_id, date, time_in, time_out, hours, status, remarks, created_at)
 
-daily_journals (id, intern_id, date, accomplishments, photo_urls, file_urls, status, supervisor_feedback, coordinator_notes, created_at)
+daily_journals (id, intern_id, date, accomplishments, photo_urls, file_urls, status, supervisor_feedback, Supervisor_notes, created_at)
 
-weekly_reports (id, intern_id, week_number, title, accomplishments, reflection, problems, solutions, file_urls, status, supervisor_comments, coordinator_notes, created_at)
+weekly_reports (id, intern_id, week_number, title, accomplishments, reflection, problems, solutions, file_urls, status, supervisor_comments, Supervisor_notes, created_at)
 
 monthly_reports (id, intern_id, month, summary, hours_rendered, performance, learning_outcomes, supervisor_remarks, status, created_at)
 

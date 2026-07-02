@@ -28,9 +28,9 @@ Open the application in a browser. The default admin account is:
 6. **Evaluate interns** under "Evaluations".
 7. **Message** interns when needed.
 
-### 4. For Coordinators
+### 4. For Supervisors
 
-1. Log in as a coordinator.
+1. Log in as a Supervisor.
 2. **Manage students** and **companies** from the sidebar.
 3. **Assign students** to companies and supervisors under "Placements".
 4. **Monitor attendance and reports**.

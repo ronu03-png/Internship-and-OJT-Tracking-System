@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { GraduationCap, Briefcase, Users, BarChart3, Shield, Calendar, FileCheck, MessageSquare, Bell, ArrowRight, CheckCircle2, Star, ChevronDown, Mail, Phone, MapPin, Send, CheckSquare, FileText, Award, Building2, UserPlus } from "lucide-react";
-import { useAuth } from "../context/AuthContext.jsx";
 import { APP_NAME, APP_TAGLINE } from "../constants.js";
 import api from "../api";
 import LandingNavbar from "../components/LandingNavbar.jsx";
@@ -12,18 +11,18 @@ const FEATURES = [
   { icon: Calendar, title: "Attendance Tracking", desc: "Log time-in/out with QR, GPS, and selfie verification for accurate hour records." },
   { icon: FileCheck, title: "Reports & Journals", desc: "Submit daily journals, weekly, monthly, and final reports for supervisor review." },
   { icon: Users, title: "Supervisor Evaluation", desc: "Rate interns across multiple competencies and generate overall performance scores." },
-  { icon: MessageSquare, title: "Built-in Messaging", desc: "Communicate directly between students, supervisors, coordinators, and administrators." },
+  { icon: MessageSquare, title: "Built-in Messaging", desc: "Communicate directly between students, supervisors, and administrators." },
   { icon: BarChart3, title: "Analytics Dashboard", desc: "Monitor attendance, requirements, hours, and evaluations in real time." },
 ];
 
 const TESTIMONIALS = [
-  { name: "Prof. Elena Rodriguez", role: "OJT Coordinator", text: "InternTrack transformed how we manage OJT. Everything is centralized and transparent." },
+  { name: "Prof. Elena Rodriguez", role: "OJT Supervisor", text: "InternTrack transformed how we manage OJT. Everything is centralized and transparent." },
   { name: "Mr. Juan Santos", role: "Company Supervisor", text: "Reviewing attendance, reports, and evaluations is now faster and more organized." },
   { name: "Maria Dela Cruz", role: "Student Intern", text: "I can track my hours, submit reports, and see my progress all in one place." },
 ];
 
 const FAQS = [
-  { q: "Who can use InternTrack?", a: "Students, company supervisors, OJT coordinators, and system administrators." },
+  { q: "Who can use InternTrack?", a: "Students, company/school supervisors, and system administrators." },
   { q: "How do students log attendance?", a: "Students can time-in and time-out via the attendance module. QR, GPS, and selfie verification can be enabled." },
   { q: "Can reports be exported?", a: "Yes. Reports can be exported to PDF or Excel for submission and record keeping." },
   { q: "Is the system mobile-friendly?", a: "Yes. InternTrack is fully responsive and works on desktop, tablet, and mobile browsers." },
@@ -43,9 +42,8 @@ const WORKFLOW = [
 
 const DASHBOARDS = [
   { role: "Intern / Student", color: "blue", stats: ["486 required hours", "12 days logged", "3 reports submitted"], items: ["Daily Journal", "Attendance", "Find OJT"], image: "intern" },
-  { role: "Company Supervisor", color: "emerald", stats: ["5 interns", "8 pending reports", "2 evaluations"], items: ["Review Attendance", "Evaluate Interns", "Approve Reports"], image: "supervisor" },
-  { role: "OJT Coordinator", color: "violet", stats: ["248 students", "38 companies", "192 placements"], items: ["Manage Students", "Companies", "Placements"], image: "coordinator" },
-  { role: "Administrator", color: "slate", stats: ["312 users", "4 roles", "1,240 audit logs"], items: ["User Management", "Analytics", "Audit Logs"], image: "admin" },
+  { role: "Company / School Supervisor", color: "emerald", stats: ["5 interns", "38 companies", "192 placements"], items: ["Review Attendance", "Evaluate Interns", "Approve Reports", "Manage Students", "Companies", "Placements"], image: "supervisor" },
+  { role: "Administrator", color: "slate", stats: ["312 users", "3 roles", "1,240 audit logs"], items: ["User Management", "Analytics", "Audit Logs"], image: "admin" },
 ];
 
 const PARTNERS = ["City Government", "Tech Innovators", "Global Solutions", "EduCloud", "Digital PH", "Metro Systems", "NextGen IT", "Creative Agency"];
@@ -53,7 +51,7 @@ const PARTNERS = ["City Government", "Tech Innovators", "Global Solutions", "Edu
 const COUNTER_STATS = [
   { label: "Interns", value: 248 },
   { label: "Partner Companies", value: 38 },
-  { label: "Coordinators", value: 12 },
+  { label: "Supervisors", value: 12 },
   { label: "Hours Tracked", value: 124650 },
 ];
 
@@ -93,8 +91,6 @@ function useReveal() {
 }
 
 export default function Home() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
   const [liveStats, setLiveStats] = useState(null);
   const [contact, setContact] = useState({ name: "", email: "", message: "" });
@@ -105,8 +101,6 @@ export default function Home() {
   useEffect(() => {
     api.get("/stats/admin").then((res) => setLiveStats(res.data)).catch(() => setLiveStats({ student_count: 248, company_count: 38, pending_requirements: 21, pending_attendance: 0 }));
   }, []);
-
-  if (user) { navigate("/"); return null; }
 
   const submitContact = (e) => {
     e.preventDefault();
@@ -130,11 +124,11 @@ export default function Home() {
             Modern Internship and OJT <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Tracking System</span>
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600 reveal" style={{ transitionDelay: "100ms" }}>
-            Connect students, companies, and coordinators in one powerful platform. Track attendance, reports, evaluations, and requirements with ease.
+            Connect students, companies, and supervisors in one powerful platform. Track attendance, reports, evaluations, and requirements with ease.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row reveal" style={{ transitionDelay: "200ms" }}>
             <Link to="/login" className="group inline-flex items-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-base font-semibold text-white shadow-xl shadow-blue-200 transition hover:bg-blue-700 hover:scale-105">
-              Sign In <ArrowRight size={18} className="transition group-hover:translate-x-1" />
+              Get Started <ArrowRight size={18} className="transition group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
@@ -160,7 +154,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center reveal">
             <h3 className="text-3xl font-bold text-slate-900">Everything you need for OJT management</h3>
-            <p className="mt-3 text-slate-600">A complete toolkit for students, supervisors, coordinators, and administrators.</p>
+            <p className="mt-3 text-slate-600">A complete toolkit for students, supervisors, and administrators.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f, idx) => (
@@ -184,7 +178,7 @@ export default function Home() {
               <h3 className="text-3xl font-bold">Why choose InternTrack?</h3>
               <p className="mt-4 text-blue-100">Designed for Philippine universities and government partner offices, InternTrack simplifies every step of the OJT lifecycle.</p>
               <ul className="mt-8 space-y-4">
-                {["Reduce paperwork and manual tracking", "Real-time visibility for coordinators", "Secure role-based access", "Export-ready reports and analytics", "Mobile-responsive design"].map((item) => (
+                {["Reduce paperwork and manual tracking", "Real-time visibility for supervisors", "Secure role-based access", "Export-ready reports and analytics", "Mobile-responsive design"].map((item) => (
                   <li key={item} className="flex items-center gap-3 text-blue-50">
                     <CheckCircle2 size={20} className="text-cyan-300" /> {item}
                   </li>
@@ -292,7 +286,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center reveal">
             <h3 className="text-3xl font-bold text-slate-900">What users say</h3>
-            <p className="mt-3 text-slate-600">Hear from students, supervisors, and coordinators.</p>
+            <p className="mt-3 text-slate-600">Hear from students, supervisors, and administrators.</p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {TESTIMONIALS.map((t, idx) => (
@@ -406,19 +400,19 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 md:grid-cols-4">
             <div className="col-span-2">
-              <div className="flex items-center gap-2.5">
+              <Link to="/" className="flex items-center gap-2.5">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-md"><GraduationCap size={20} strokeWidth={2.5} /></div>
                 <div>
                   <span className="text-lg font-extrabold leading-tight text-slate-900">{APP_NAME}</span>
                   <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">{APP_TAGLINE}</p>
                 </div>
-              </div>
+              </Link>
               <p className="mt-3 max-w-sm text-sm text-slate-500">A web-based internship and OJT placement tracking system for universities and partner organizations.</p>
             </div>
             <div>
               <h4 className="font-bold text-slate-900">Quick Links</h4>
               <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                <li><Link to="/login" className="hover:text-blue-600">Sign In</Link></li>
+                <li><Link to="/login" className="hover:text-blue-600">Get Started</Link></li>
                 <li><a href="#features" className="hover:text-blue-600">Features</a></li>
                 <li><a href="#contact" className="hover:text-blue-600">Contact</a></li>
               </ul>

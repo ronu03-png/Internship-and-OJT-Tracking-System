@@ -137,7 +137,6 @@ db.exec(`
     student_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     company_id       INTEGER REFERENCES companies(id) ON DELETE SET NULL,
     supervisor_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,
-    coordinator_id   INTEGER REFERENCES users(id) ON DELETE SET NULL,
     status           TEXT DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected','completed')),
     start_date       TEXT,
     end_date         TEXT,
@@ -156,7 +155,7 @@ db.exec(`
     file_urls       TEXT,
     status          TEXT DEFAULT 'submitted' CHECK (status IN ('submitted','approved','rejected','pending')),
     supervisor_feedback TEXT,
-    coordinator_notes   TEXT,
+    supervisor_notes   TEXT,
     created_at      TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -173,7 +172,7 @@ db.exec(`
     file_urls       TEXT,
     status          TEXT DEFAULT 'pending' CHECK (status IN ('pending','approved','needs_revision')),
     supervisor_comments TEXT,
-    coordinator_notes   TEXT,
+    supervisor_notes   TEXT,
     created_at      TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -331,6 +330,14 @@ ensureColumn("users", "approved_hours", "INTEGER DEFAULT 0");
 ensureColumn("users", "status", "TEXT DEFAULT 'active'");
 ensureColumn("daily_journals", "skills_learned", "TEXT");
 
+// Geofencing / anti-tampering columns for DTR clock in/out.
+ensureColumn("attendance", "time_in_lat", "REAL");
+ensureColumn("attendance", "time_in_lng", "REAL");
+ensureColumn("attendance", "time_out_lat", "REAL");
+ensureColumn("attendance", "time_out_lng", "REAL");
+// 'manual' = student typed the times; 'device' = server-stamped clock in/out.
+ensureColumn("attendance", "source", "TEXT DEFAULT 'manual'");
+
 // --- Migration: convert legacy coordinator accounts to supervisor accounts.
 function convertCoordinatorsToSupervisors() {
   const tableInfo = db.prepare("PRAGMA table_info(users)").all();
@@ -341,6 +348,40 @@ function convertCoordinatorsToSupervisors() {
   }
 }
 convertCoordinatorsToSupervisors();
+
+// --- Migration: remove coordinator-specific columns after role merge.
+function removeCoordinatorColumns() {
+  try {
+    const placementsCols = db.prepare("PRAGMA table_info(internship_placements)").all();
+    if (placementsCols.some((c) => c.name === "coordinator_id")) {
+      db.exec("ALTER TABLE internship_placements DROP COLUMN coordinator_id");
+      console.log("Removed coordinator_id column from internship_placements.");
+    }
+  } catch (err) {
+    console.log("Could not drop coordinator_id column:", err.message);
+  }
+
+  try {
+    const journalsCols = db.prepare("PRAGMA table_info(daily_journals)").all();
+    if (journalsCols.some((c) => c.name === "coordinator_notes")) {
+      db.exec("ALTER TABLE daily_journals RENAME COLUMN coordinator_notes TO supervisor_notes");
+      console.log("Renamed coordinator_notes to supervisor_notes in daily_journals.");
+    }
+  } catch (err) {
+    console.log("Could not rename daily_journals coordinator_notes:", err.message);
+  }
+
+  try {
+    const weeklyCols = db.prepare("PRAGMA table_info(weekly_reports)").all();
+    if (weeklyCols.some((c) => c.name === "coordinator_notes")) {
+      db.exec("ALTER TABLE weekly_reports RENAME COLUMN coordinator_notes TO supervisor_notes");
+      console.log("Renamed coordinator_notes to supervisor_notes in weekly_reports.");
+    }
+  } catch (err) {
+    console.log("Could not rename weekly_reports coordinator_notes:", err.message);
+  }
+}
+removeCoordinatorColumns();
 
 // --- Migration for old role constraint (intern/supervisor only) to new 3-role set.
 function migrateUserRoles() {

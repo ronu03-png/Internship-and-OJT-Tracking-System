@@ -1,6 +1,6 @@
 # OJT InternTrack
 
-A full-stack internship and OJT placement tracking system for universities, coordinators, company supervisors, and student interns.
+A full-stack internship and OJT placement tracking system for universities, company/school supervisors, and student interns.
 
 ## Stack
 
@@ -48,7 +48,6 @@ npm run build
 | Role            | Email                         | Password |
 |-----------------|-------------------------------|----------|
 | Admin           | admin@interntrack.local       | admin123 |
-| Coordinator     | coordinator1@demo.com         | demo123  |
 | Supervisor      | supervisor1@demo.com          | demo123  |
 | Intern / Student| student1@demo.com               | demo123  |
 

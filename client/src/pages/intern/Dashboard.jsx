@@ -4,6 +4,7 @@ import { Clock, CalendarCheck, FileText, Hourglass, MessagesSquare, ArrowRight, 
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { StatCard, Spinner, ProgressBar, Badge } from "../../components/ui.jsx";
+import OJTProgress from "../../components/OJTProgress.jsx";
 
 const QUICK_ACTIONS = [
   { to: "/openings", icon: Briefcase, title: "Find OJT", desc: "Browse & contact companies" },
@@ -34,11 +35,11 @@ export default function InternDashboard() {
   return (
     <div className="space-y-6">
       <div className="relative overflow-hidden rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-100 via-brand-50 to-white p-6 shadow-card sm:p-8">
-        <div className="absolute inset-y-0 left-0 w-2 bg-brand-gradient" />
+        <div className="absolute inset-y-0 left-0 w-2 bg-gradient-to-b from-brand-500 to-brand-700" />
         <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-brand-300/40 blur-3xl" />
-        <div className="absolute -bottom-20 -right-12 h-40 w-40 rounded-full bg-accent-300/25 blur-3xl" />
+        <div className="absolute -bottom-20 -right-12 h-40 w-40 rounded-full bg-cyan-300/25 blur-3xl" />
         <div className="relative">
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-brand-gradient px-3 py-1 text-xs font-semibold text-white shadow-sm"><GraduationCap size={14} /> Intern / Student</div>
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-green-600 px-3 py-1 text-xs font-semibold text-white shadow-sm"><GraduationCap size={14} /> Intern / Student</div>
           <h1 className="text-2xl font-bold text-slate-800 sm:text-3xl">Welcome back, {user.full_name.split(" ")[0]} 👋</h1>
           <p className="mt-1 text-slate-600">Here is your internship progress so far.</p>
           <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-600">
@@ -50,17 +51,20 @@ export default function InternDashboard() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Clock} tone="emerald" label="Approved hours" value={stats.approved_hours} sub={`of ${stats.required_hours} required`} />
-        <StatCard icon={Hourglass} tone="amber" label="Remaining hours" value={stats.remaining_hours} sub="to complete" />
+        <StatCard icon={Clock} tone="brand" label="Approved hours" value={stats.approved_hours} sub={`of ${stats.required_hours} required`} />
+        <StatCard icon={Hourglass} tone="brand" label="Remaining hours" value={stats.remaining_hours} sub="to complete" />
         <StatCard icon={CalendarCheck} tone="brand" label="Days logged" value={stats.days_logged} sub="attendance records" />
-        <StatCard icon={FileCheck2} tone="accent" label="Requirements" value={`${stats.requirements_approved}/${stats.requirements_total}`} sub="approved" />
+        <StatCard icon={FileCheck2} tone="brand" label="Requirements" value={`${stats.requirements_approved}/${stats.requirements_total}`} sub="approved" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="card p-6 lg:col-span-2">
-          <h2 className="mb-3 font-semibold text-slate-800">Hour completion</h2>
-          <ProgressBar value={stats.progress} size="md" />
-          <p className="mt-2.5 text-sm text-slate-500">{stats.approved_hours} of {stats.required_hours} hours completed.</p>
+        <div className="lg:col-span-2">
+          <OJTProgress
+            completed={stats.approved_hours ?? 320}
+            required={stats.required_hours ?? 486}
+            title="Hour Completion"
+            subtitle="Your approved hours toward the OJT requirement"
+          />
         </div>
 
         <div className="card p-5">

@@ -35,10 +35,10 @@ router.post("/", authRequired, requireRole("admin", "supervisor"), (req, res) =>
   }
   const info = db
     .prepare(
-      `INSERT INTO internship_placements (student_id, company_id, supervisor_id, coordinator_id, start_date, end_date)
-       VALUES (?, ?, ?, ?, ?, ?)`
+      `INSERT INTO internship_placements (student_id, company_id, supervisor_id, start_date, end_date)
+       VALUES (?, ?, ?, ?, ?)`
     )
-    .run(student_id, company_id, supervisor_id || null, req.user.id, start_date || null, end_date || null);
+    .run(student_id, company_id, supervisor_id || null, start_date || null, end_date || null);
   db.prepare("UPDATE users SET company_id = ?, supervisor_id = ? WHERE id = ?").run(
     company_id,
     supervisor_id || null,

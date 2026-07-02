@@ -5,7 +5,7 @@ import { Badge, Modal, Spinner, EmptyState, PageHeader, Avatar } from "../../com
 
 const blank = { student_id: "", company_id: "", supervisor_id: "", start_date: "", end_date: "" };
 
-export default function CoordinatorPlacements() {
+export default function SupervisorPlacements() {
   const [placements, setPlacements] = useState(null);
   const [students, setStudents] = useState([]);
   const [companies, setCompanies] = useState([]);

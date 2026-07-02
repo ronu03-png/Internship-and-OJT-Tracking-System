@@ -67,7 +67,7 @@ export default function Login() {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    if (user) { navigate("/"); return; }
+    if (user) { navigate("/dashboard"); return; }
     setAccounts(loadSavedAccounts());
   }, [user, navigate]);
 

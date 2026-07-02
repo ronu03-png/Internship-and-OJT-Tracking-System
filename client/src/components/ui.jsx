@@ -217,11 +217,11 @@ export function ProgressBar({ value = 0, showLabel = true, size = "sm" }) {
   const color =
     pct === 0
       ? "bg-slate-200"
-      : pct < 31
-      ? "bg-amber-400"
-      : pct < 71
-      ? "bg-emerald-400"
-      : "bg-emerald-600";
+      : pct < 34
+      ? "bg-brand-300"
+      : pct < 67
+      ? "bg-brand-500"
+      : "bg-brand-700";
   const height = size === "md" ? "h-3" : "h-2.5";
   return (
     <div className="flex items-center gap-3">

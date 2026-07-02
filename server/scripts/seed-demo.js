@@ -2,20 +2,13 @@ import bcrypt from "bcryptjs";
 import db from "../src/db.js";
 
 function seedDemo() {
-  const existing = db.prepare("SELECT COUNT(*) AS n FROM users WHERE role IN ('coordinator','supervisor','intern')").get().n;
+  const existing = db.prepare("SELECT COUNT(*) AS n FROM users WHERE role IN ('supervisor','intern')").get().n;
   if (existing > 0) {
     console.log("Demo users already exist. Skipping seed.");
     return;
   }
 
   const hash = bcrypt.hashSync("demo123", 10);
-
-  const coordinator = db
-    .prepare(
-      "INSERT INTO users (full_name, email, password_hash, role, department, status) VALUES (?, ?, ?, ?, ?, ?)"
-    )
-    .run("Demo Coordinator", "coordinator@demo.com", hash, "coordinator", "College of Engineering", "active");
-  const coordinatorId = coordinator.lastInsertRowid;
 
   const supervisor = db
     .prepare(
@@ -86,12 +79,11 @@ function seedDemo() {
 
     // placement
     db.prepare(
-      "INSERT INTO internship_placements (student_id, company_id, supervisor_id, coordinator_id, status, start_date, end_date) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO internship_placements (student_id, company_id, supervisor_id, status, start_date, end_date) VALUES (?, ?, ?, ?, ?, ?)"
     ).run(
       studentId,
       companyId,
       supervisorId,
-      coordinatorId,
       "approved",
       "2026-06-01",
       "2026-08-31"
@@ -104,7 +96,7 @@ function seedDemo() {
   ).run(
     "Welcome OJT Students",
     "Welcome to the City Hall HR Department OJT program. Please complete your requirements and log your attendance daily.",
-    coordinatorId,
+    supervisorId,
     1
   );
 
@@ -117,12 +109,11 @@ function seedDemo() {
     "2026-06-01",
     "2026-06-01",
     "Orientation for all OJT students.",
-    coordinatorId
+    supervisorId
   );
 
   console.log("Demo data seeded successfully.");
   console.log("Demo accounts:");
-  console.log("  coordinator@demo.com / demo123");
   console.log("  supervisor@demo.com / demo123");
   console.log("  juan@demo.com / demo123");
   console.log("  maria@demo.com / demo123");

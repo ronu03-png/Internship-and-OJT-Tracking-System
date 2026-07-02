@@ -10,7 +10,7 @@ This document specifies the functional and non-functional requirements for Inter
 #### 2.1 Authentication
 - FR-1: Users shall register with full name, email, password, role, department, and course/company.
 - FR-2: Users shall log in with email and password.
-- FR-3: The system shall support role-based access control (admin, coordinator, supervisor, intern).
+- FR-3: The system shall support role-based access control (admin, Supervisor, supervisor, intern).
 - FR-4: The system shall remember me via a secure token in local storage.
 - FR-5: Users shall be able to log out.
 
@@ -20,12 +20,12 @@ This document specifies the functional and non-functional requirements for Inter
 
 #### 2.3 User Management
 - FR-8: Administrators can create, view, and deactivate users.
-- FR-9: Coordinators can view students and companies.
+- FR-9: Supervisors can view students and companies.
 - FR-10: Supervisors can view their assigned interns.
 
 #### 2.4 Company and Placement
-- FR-11: Coordinators can create and manage companies/offices.
-- FR-12: Coordinators can assign students to companies and supervisors.
+- FR-11: Supervisors can create and manage companies/offices.
+- FR-12: Supervisors can assign students to companies and supervisors.
 - FR-13: Students can browse OJT openings and apply.
 - FR-14: Supervisors can accept/decline applications.
 
@@ -49,7 +49,7 @@ This document specifies the functional and non-functional requirements for Inter
 
 #### 2.9 Communication
 - FR-25: Students and supervisors can send private messages.
-- FR-26: Coordinators and administrators can post announcements.
+- FR-26: Supervisors and administrators can post announcements.
 - FR-27: Users can view calendar events.
 
 #### 2.10 Analytics and Audit

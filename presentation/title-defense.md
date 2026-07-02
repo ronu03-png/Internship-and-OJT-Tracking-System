@@ -17,12 +17,12 @@
 Colleges and universities that deploy students for internships and On-the-Job Training (OJT) still rely heavily on manual, paper-based, and fragmented processes. These traditional methods create several problems:
 
 - **Difficulty finding placements:** Students struggle to discover verified companies and government offices that accept OJT students.
-- **Slow communication:** Coordination between students, supervisors, and coordinators is done through scattered phone calls, emails, and text messages.
+- **Slow communication:** Coordination between students, supervisors, and Supervisors is done through scattered phone calls, emails, and text messages.
 - **Inefficient tracking:** Attendance, required hours, and submitted reports are tracked using spreadsheets or physical documents, making monitoring time-consuming and error-prone.
 - **Delayed approvals:** Requirements, reports, and attendance records take a long time to be reviewed and approved.
 - **Lack of transparency:** There is no single platform where all stakeholders can view internship progress in real time.
 
-> **Core problem:** There is no unified, digital, department-based system that allows students to find OJT openings, apply directly, and be monitored by their supervisors and coordinators throughout the entire internship period.
+> **Core problem:** There is no unified, digital, department-based system that allows students to find OJT openings, apply directly, and be monitored by their supervisors and Supervisors throughout the entire internship period.
 
 ---
 
@@ -42,7 +42,7 @@ To develop a modern, responsive, and role-based web application that streamlines
    - Post OJT openings and review student applications.
    - Verify attendance, evaluate performance, and approve/reject reports and requirements.
 
-3. **For Coordinators:**
+3. **For Supervisors:**
    - Manage students, companies, and internship placements.
    - Monitor attendance and progress across departments.
    - Generate summary and analytics reports.
@@ -57,7 +57,7 @@ To develop a modern, responsive, and role-based web application that streamlines
 
 ### In Scope
 
-- **User Roles:** Administrator, OJT Coordinator, Company Supervisor, and Student/Intern.
+- **User Roles:** Administrator, OJT Supervisor, Company Supervisor, and Student/Intern.
 - **Authentication:** Login, registration, remember me, role-based access control, and secure sessions.
 - **Department & Course Division:** Students are grouped by department and course, and openings can be targeted by department/course.
 - **OJT Placement Module:** A searchable board of OJT openings, application submission, and acceptance workflow.

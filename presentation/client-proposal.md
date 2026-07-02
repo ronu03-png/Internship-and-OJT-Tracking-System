@@ -15,7 +15,7 @@ The purpose of **InternTrack** is to provide a single, modern, web-based platfor
 - A digital **job board** for OJT openings posted by companies and city offices.
 - A **tracking system** for attendance, hours, reports, and requirements.
 - A **communication hub** for students and supervisors.
-- A **dashboard** for coordinators and administrators to monitor the entire program.
+- A **dashboard** for Supervisors and administrators to monitor the entire program.
 
 The ultimate goal is to make OJT placement faster, tracking easier, and completion more transparent for everyone involved.
 
@@ -50,7 +50,7 @@ The HR Department of the City Hall was selected as the client because it fits th
 
 ### 3.1 For the HR Department
 
-The HR Department will act as both **supervisor** and **coordinator** within the system:
+The HR Department will act as both **supervisor** and **Supervisor** within the system:
 
 - **Post OJT openings** on behalf of the City Hall and specific departments.
 - **Review applications** from students and accept/decline them.
@@ -65,7 +65,7 @@ The HR Department will act as both **supervisor** and **coordinator** within the
 - Upload required documents (resume, MOA, medical, consent, etc.).
 - Communicate with HR supervisors and view their progress.
 
-### 3.3 For Coordinators and Administrators
+### 3.3 For Supervisors and Administrators
 
 - Manage all users, students, companies, and city offices.
 - Monitor internship status, attendance, and completion rates.
@@ -81,7 +81,7 @@ The HR Department will act as both **supervisor** and **coordinator** within the
 4. **Report Submission** — Narrative reports with supervisor feedback.
 5. **Requirements Management** — Document upload and approval tracking.
 6. **Messaging System** — Direct communication between students and supervisors.
-7. **Role-Based Dashboards** — Different views for admin, coordinator, supervisor, and student.
+7. **Role-Based Dashboards** — Different views for admin, Supervisor, supervisor, and student.
 8. **Notifications & Analytics** — Alerts and summary statistics for monitoring.
 9. **Responsive Design** — Accessible on desktop, tablet, and mobile.
 

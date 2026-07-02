@@ -1,18 +1,19 @@
 import { GraduationCap, Shield, Users, Briefcase, Clock3, MessagesSquare, CheckCircle2, BarChart3, FileCheck, Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
 import { APP_NAME, APP_TAGLINE } from "../constants.js";
 
 const ROLE_META = {
   admin: {
-    gradient: "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
+    gradient: "bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700",
     highlights: [
       { icon: BarChart3, title: "Advanced Analytics", text: "Monitor OJT metrics, attendance trends, and completion rates in real time." },
       { icon: Shield, title: "Role & Access Control", text: "Manage users, permissions, and audit every system action." },
-      { icon: Users, title: "Institution Oversight", text: "Oversee coordinators, supervisors, and student placements across the campus." },
+      { icon: Users, title: "Institution Oversight", text: "Oversee supervisors and student placements across the campus." },
     ],
     tagline: "Secure, executive-level control over the entire OJT ecosystem.",
   },
   supervisor: {
-    gradient: "bg-gradient-to-br from-emerald-700 via-teal-700 to-emerald-800",
+    gradient: "bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700",
     highlights: [
       { icon: Clock3, title: "Attendance Verification", text: "Verify daily time-in/out logs and compute rendered hours." },
       { icon: FileCheck, title: "Reports & Requirements", text: "Review journals, weekly reports, monthly reports, and documents." },
@@ -41,7 +42,7 @@ export default function AuthShell({ children, role = "intern" }) {
         <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
         <div className="absolute -bottom-24 -left-16 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
 
-        <div className="relative flex items-center gap-3">
+        <Link to="/" className="relative flex items-center gap-3">
           <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white/20 text-white shadow-lg ring-2 ring-white/40 backdrop-blur">
             <GraduationCap size={26} strokeWidth={2.5} />
           </div>
@@ -49,7 +50,7 @@ export default function AuthShell({ children, role = "intern" }) {
             <p className="text-lg font-extrabold tracking-tight">{APP_NAME}</p>
             <p className="text-xs text-white/80">{APP_TAGLINE}</p>
           </div>
-        </div>
+        </Link>
 
         <div className="relative max-w-md">
           <h2 className="text-3xl font-extrabold leading-tight">{meta.tagline}</h2>

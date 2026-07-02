@@ -12,7 +12,7 @@ export default function Announcements() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(blank);
   const [saving, setSaving] = useState(false);
-  const canManage = ["admin", "coordinator"].includes(user?.role);
+  const canManage = ["admin", "supervisor"].includes(user?.role);
 
   const load = () => api.get("/announcements").then((res) => setItems(res.data));
   useEffect(() => { load(); }, []);
@@ -39,7 +39,7 @@ export default function Announcements() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Announcements" subtitle="Important updates and notices from coordinators and administrators.">
+      <PageHeader title="Announcements" subtitle="Important updates and notices from administrators and supervisors.">
         {canManage && (
           <button className="btn-primary" onClick={() => setOpen(true)}><Plus size={16} /> Post</button>
         )}

@@ -121,8 +121,8 @@ function seed() {
 
     // placement
     db.prepare(
-      "INSERT INTO internship_placements (student_id, company_id, supervisor_id, coordinator_id, status, start_date, end_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))"
-    ).run(studentId, companyId, supervisorId, programSupervisorId, status === "completed" ? "completed" : "approved", "2026-06-01", status === "completed" ? "2026-07-15" : "2026-08-31");
+      "INSERT INTO internship_placements (student_id, company_id, supervisor_id, status, start_date, end_date, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+    ).run(studentId, companyId, supervisorId, status === "completed" ? "completed" : "approved", "2026-06-01", status === "completed" ? "2026-07-15" : "2026-08-31");
 
     // attendance (last 30 days)
     const baseDate = new Date("2026-06-01");
@@ -150,7 +150,7 @@ function seed() {
 
     // weekly reports
     for (let w = 1; w <= 4; w++) {
-      db.prepare("INSERT INTO weekly_reports (intern_id, week_number, title, accomplishments, reflection, problems, solutions, status, supervisor_comments, coordinator_notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))")
+      db.prepare("INSERT INTO weekly_reports (intern_id, week_number, title, accomplishments, reflection, problems, solutions, status, supervisor_comments, supervisor_notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))")
         .run(studentId, w, `Week ${w} Report`, `Completed ${rand(["orientation","module development","testing phase","client presentation","documentation","deployment"])}.`, `I learned ${rand(["team collaboration","time management","technical debugging","professional communication"])}.`, `Faced ${rand(["tight deadlines","technical errors","miscommunication","unfamiliar tools"])}.`, `Resolved by ${rand(["asking supervisor","researching online","team discussion","trial and error"])}.`, w <= 3 ? "approved" : "pending", "Great work this week.", "Keep up the good performance.");
     }
 

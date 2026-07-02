@@ -214,7 +214,7 @@ def add_problem_statement_slide():
 
     add_bullet_box(slide, 0.6, 1.9, 12.1, 3.6,
                    ["Students struggle to find verified companies and city offices that accept OJT placements.",
-                    "Supervisors and coordinators track attendance, reports, and requirements on paper or spreadsheets.",
+                    "Supervisors and Supervisors track attendance, reports, and requirements on paper or spreadsheets.",
                     "Communication is fragmented across calls, emails, and text messages.",
                     "There is no centralized visibility of student progress and completion status.",
                     "Approval of documents, reports, and attendance takes too long."],
@@ -261,7 +261,7 @@ def add_objectives_slide():
                    ["Manage students, companies, and placements.",
                     "Monitor progress across departments.",
                     "Generate summary reports."],
-                   title="For Coordinators")
+                   title="For Supervisors")
 
     add_bullet_box(slide, 6.9, 5.0, 5.8, 2.0,
                    ["Manage users, roles, and settings.",
@@ -276,7 +276,7 @@ def add_scope_slide():
     add_title_bar(slide, "Scope & Limitations")
 
     add_bullet_box(slide, 0.6, 1.9, 5.8, 4.6,
-                   ["Four user roles: Admin, Coordinator, Supervisor, Student.",
+                   ["Four user roles: Admin, Supervisor, Supervisor, Student.",
                     "Department and course-based division.",
                     "OJT opening board, applications, and placement.",
                     "Attendance, reports, requirements, and messaging.",
@@ -489,7 +489,7 @@ def add_summary_slide():
     tf = tb.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
-    p.text = "InternTrack with OJTConnect is a modern, responsive, and role-based web system designed to solve the OJT management problems faced by colleges and city offices. It helps students find placements, helps supervisors track progress, and helps coordinators and HR oversee the entire program."
+    p.text = "InternTrack with OJTConnect is a modern, responsive, and role-based web system designed to solve the OJT management problems faced by colleges and city offices. It helps students find placements, helps supervisors track progress, and helps Supervisors and HR oversee the entire program."
     p.font.size = Pt(16)
     p.font.bold = True
     p.font.color.rgb = DARK

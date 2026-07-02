@@ -3,7 +3,7 @@
 ## Actors
 
 - **Administrator** — full system access.
-- **OJT Coordinator** — manages students, companies, placements, and monitors progress.
+- **OJT Supervisor** — manages students, companies, placements, and monitors progress.
 - **Company Supervisor** — reviews student work, verifies attendance, and evaluates interns.
 - **Student / Intern** — submits requirements, logs attendance, writes reports, and views results.
 
@@ -16,7 +16,7 @@
 - UC4: View analytics
 - UC5: Post announcements
 
-### OJT Coordinator
+### OJT Supervisor
 - UC6: Manage student records
 - UC7: Manage companies / city offices
 - UC8: Assign students to placements

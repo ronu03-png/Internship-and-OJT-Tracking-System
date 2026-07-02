@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Users } from "lucide-react";
 import api from "../../api";
 import { Spinner, EmptyState, Avatar, ProgressBar, PageHeader } from "../../components/ui.jsx";
+import OJTProgress from "../../components/OJTProgress.jsx";
 
 export default function SupervisorInterns() {
   const [interns, setInterns] = useState(null);
@@ -15,6 +16,14 @@ export default function SupervisorInterns() {
   return (
     <div className="space-y-6">
       <PageHeader title="My Interns" subtitle="Everyone interning under your company." />
+      <div className="max-w-2xl">
+        <OJTProgress
+          completed={320}
+          required={486}
+          title="Sample Intern Progress"
+          subtitle="Preview: representative hours completed toward the 486-hour requirement"
+        />
+      </div>
       {interns.length === 0 ? (
         <div className="card"><EmptyState icon={Users} title="No interns yet" hint="Interns select your company when they register." /></div>
       ) : (

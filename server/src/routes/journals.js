@@ -48,7 +48,7 @@ router.get("/", authRequired, (req, res) => {
 
 // Supervisor reviews a journal
 router.patch("/:id/review", authRequired, requireRole("supervisor"), (req, res) => {
-  const { status, feedback, coordinator_notes } = req.body || {};
+  const { status, feedback, supervisor_notes } = req.body || {};
   if (!["submitted", "approved", "rejected"].includes(status)) {
     return res.status(400).json({ error: "Invalid status" });
   }
@@ -59,8 +59,8 @@ router.patch("/:id/review", authRequired, requireRole("supervisor"), (req, res) 
     return res.status(403).json({ error: "Forbidden" });
   }
   db.prepare(
-    "UPDATE daily_journals SET status = ?, supervisor_feedback = ?, coordinator_notes = ? WHERE id = ?"
-  ).run(status, feedback ?? null, coordinator_notes ?? null, row.id);
+    "UPDATE daily_journals SET status = ?, supervisor_feedback = ?, supervisor_notes = ? WHERE id = ?"
+  ).run(status, feedback ?? null, supervisor_notes ?? null, row.id);
   res.json(db.prepare("SELECT * FROM daily_journals WHERE id = ?").get(row.id));
 });
 

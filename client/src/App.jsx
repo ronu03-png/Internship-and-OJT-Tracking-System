@@ -26,9 +26,9 @@ import AdminUsers from "./pages/admin/Users.jsx";
 import AdminAuditLogs from "./pages/admin/AuditLogs.jsx";
 import AdminSettings from "./pages/admin/Settings.jsx";
 
-import ManageStudents from "./pages/coordinator/Students.jsx";
-import ManageCompanies from "./pages/coordinator/Companies.jsx";
-import ManagePlacements from "./pages/coordinator/Placements.jsx";
+import ManageStudents from "./pages/supervisor/Students.jsx";
+import ManageCompanies from "./pages/supervisor/Companies.jsx";
+import ManagePlacements from "./pages/supervisor/Placements.jsx";
 
 import InternJournals from "./pages/intern/Journals.jsx";
 import InternWeeklyReports from "./pages/intern/WeeklyReports.jsx";
@@ -67,7 +67,7 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Home />} />
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
 
       <Route

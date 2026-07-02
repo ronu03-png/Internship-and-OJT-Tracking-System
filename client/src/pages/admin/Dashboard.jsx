@@ -3,6 +3,7 @@ import { Users, Building2, Briefcase, FileCheck2, Megaphone, CalendarDays, Shiel
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { StatCard, Spinner, Badge } from "../../components/ui.jsx";
+import OJTProgress from "../../components/OJTProgress.jsx";
 
 function MiniBar({ label, value, max, color }) {
   const pct = Math.min(100, Math.round((value / (max || 1)) * 100));
@@ -64,29 +65,39 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white shadow-xl sm:p-8">
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-amber-300 via-transparent to-transparent" />
+      <div className="relative overflow-hidden rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-100 via-brand-50 to-white p-6 shadow-card sm:p-8">
+        <div className="absolute inset-y-0 left-0 w-2 bg-gradient-to-b from-brand-500 to-brand-700" />
+        <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-brand-300/40 blur-3xl" />
+        <div className="absolute -bottom-20 -right-12 h-40 w-40 rounded-full bg-cyan-300/25 blur-3xl" />
         <div className="relative">
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold backdrop-blur"><Shield size={14} /> Administrator</div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Executive Dashboard</h1>
-          <p className="mt-1 text-white/70">Welcome back, {user.full_name.split(" ")[0]}. Oversee the entire OJT program at a glance.</p>
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-600 to-red-600 px-3 py-1 text-xs font-semibold text-white shadow-sm"><Shield size={14} /> Administrator</div>
+          <h1 className="text-2xl font-bold text-slate-800 sm:text-3xl">Executive Dashboard</h1>
+          <p className="mt-1 text-slate-600">Welcome back, {user.full_name.split(" ")[0]}. Oversee the entire OJT program at a glance.</p>
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Users} tone="brand" label="Total Users" value={stats.total_users} />
-        <StatCard icon={Users} tone="emerald" label="Students" value={stats.student_count} />
-        <StatCard icon={Building2} tone="amber" label="Companies" value={stats.company_count} />
-        <StatCard icon={Briefcase} tone="sky" label="Placements" value={stats.placement_count} />
-        <StatCard icon={Activity} tone="emerald" label="Active Interns" value={stats.active_interns} />
+        <StatCard icon={Users} tone="brand" label="Students" value={stats.student_count} />
+        <StatCard icon={Building2} tone="brand" label="Companies" value={stats.company_count} />
+        <StatCard icon={Briefcase} tone="brand" label="Placements" value={stats.placement_count} />
+        <StatCard icon={Activity} tone="brand" label="Active Interns" value={stats.active_interns} />
         <StatCard icon={FileCheck2} tone="brand" label="Completed OJT" value={stats.completed_interns} />
-        <StatCard icon={FileCheck2} tone="rose" label="Pending Requirements" value={stats.pending_requirements} />
-        <StatCard icon={Users} tone="purple" label="Pending Evaluations" value={stats.pending_evaluations} />
+        <StatCard icon={FileCheck2} tone="brand" label="Pending Requirements" value={stats.pending_requirements} />
+        <StatCard icon={Users} tone="brand" label="Pending Evaluations" value={stats.pending_evaluations} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="card p-5 lg:col-span-2">
           <h3 className="mb-4 text-lg font-bold text-slate-900">Program Overview</h3>
+          <div className="mb-5">
+            <OJTProgress
+              completed={320}
+              required={486}
+              title="Sample OJT Progress"
+              subtitle="Preview: representative intern hours completed vs. required"
+            />
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <MiniBar label="Attendance Today" value={stats.attendance_today} max={stats.student_count} color="bg-emerald-500" />
             <MiniBar label="Late Today" value={stats.late_today} max={stats.student_count} color="bg-amber-500" />

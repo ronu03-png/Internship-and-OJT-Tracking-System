@@ -52,7 +52,7 @@ router.get("/", authRequired, (req, res) => {
 });
 
 router.patch("/:id/review", authRequired, requireRole("supervisor"), (req, res) => {
-  const { status, comments, coordinator_notes } = req.body || {};
+  const { status, comments, supervisor_notes } = req.body || {};
   if (!["pending", "approved", "needs_revision"].includes(status)) {
     return res.status(400).json({ error: "Invalid status" });
   }
@@ -63,8 +63,8 @@ router.patch("/:id/review", authRequired, requireRole("supervisor"), (req, res) 
     return res.status(403).json({ error: "Forbidden" });
   }
   db.prepare(
-    "UPDATE weekly_reports SET status = ?, supervisor_comments = ?, coordinator_notes = ? WHERE id = ?"
-  ).run(status, comments ?? null, coordinator_notes ?? null, row.id);
+    "UPDATE weekly_reports SET status = ?, supervisor_comments = ?, supervisor_notes = ? WHERE id = ?"
+  ).run(status, comments ?? null, supervisor_notes ?? null, row.id);
   res.json(db.prepare("SELECT * FROM weekly_reports WHERE id = ?").get(row.id));
 });
 

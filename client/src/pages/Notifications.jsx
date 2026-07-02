@@ -9,14 +9,18 @@ export default function Notifications() {
   const load = () => api.get("/notifications").then((res) => setItems(res.data));
   useEffect(() => { load(); }, []);
 
+  const notifyUpdate = () => window.dispatchEvent(new Event("notifications-updated"));
+
   const markRead = async (id) => {
     await api.patch(`/notifications/${id}/read`);
     load();
+    notifyUpdate();
   };
 
   const markAllRead = async () => {
     await api.patch("/notifications/read-all");
     load();
+    notifyUpdate();
   };
 
   if (items === null) return <Spinner />;

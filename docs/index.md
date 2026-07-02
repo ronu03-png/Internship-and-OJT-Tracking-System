@@ -30,7 +30,7 @@ Default admin account:
 - Password: `admin123`
 
 Demo accounts (seeded automatically):
-- `coordinator@demo.com` / `demo123`
+- `Supervisor@demo.com` / `demo123`
 - `supervisor@demo.com` / `demo123`
 - `juan@demo.com` / `demo123`
 - `maria@demo.com` / `demo123`
