@@ -36,3 +36,8 @@ __pycache__/
 .venv/
 reporting/.venv/
 reporting/*.xlsx
+
+# Capstone partnership letter drafts (local files, not on GitHub)
+docs/partnership-letter*.docx
+docs/partnership-letter.html
+scripts/convert-letter.js

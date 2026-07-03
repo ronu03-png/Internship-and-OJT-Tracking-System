@@ -33,7 +33,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const INTERN_NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/openings", label: "Find OJT", icon: Briefcase },
   { to: "/attendance", label: "Attendance", icon: CalendarClock },
   { to: "/journals", label: "Daily Journal", icon: BookOpen },
   { to: "/weekly-reports", label: "Weekly Report", icon: FileText },
