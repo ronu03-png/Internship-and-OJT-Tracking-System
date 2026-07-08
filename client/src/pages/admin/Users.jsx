@@ -9,28 +9,81 @@ const roleBadge = {
   intern: "bg-emerald-100 text-emerald-700 ring-emerald-200",
 };
 
-const blank = { full_name: "", email: "", password: "", role: "intern", department: "", course: "", company_name: "" };
+const blank = { full_name: "", email: "", password: "", role: "intern", department: "", course: "", company_name: "", position: "", student_id: "", required_hours: "486", supervisor_id: "", phone: "", status: "active" };
 
 export default function AdminUsers() {
   const [users, setUsers] = useState(null);
+  const [supervisors, setSupervisors] = useState([]);
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState("create");
+  const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(blank);
   const [saving, setSaving] = useState(false);
 
   const load = () => api.get("/auth/users").then((res) => setUsers(res.data));
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); api.get("/auth/supervisors").then((res) => setSupervisors(res.data)); }, []);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  const openCreate = () => {
+    setMode("create");
+    setEditingId(null);
+    setForm(blank);
+    setOpen(true);
+  };
+
+  const openEdit = async (id) => {
+    const user = await api.get(`/admin/users/${id}`).then((res) => res.data).catch(() => null);
+    if (!user) return;
+    setMode("edit");
+    setEditingId(id);
+    setForm({
+      full_name: user.full_name || "",
+      email: user.email || "",
+      password: "",
+      role: user.role || "intern",
+      department: user.department || "",
+      course: user.course || "",
+      company_name: user.company_name || "",
+      position: user.position || "",
+      student_id: user.student_id || "",
+      required_hours: String(user.required_hours || 486),
+      supervisor_id: user.supervisor_id || "",
+      phone: user.phone || "",
+      status: user.status || "active",
+    });
+    setOpen(true);
+  };
+
+  const close = () => {
+    setOpen(false);
+    setForm(blank);
+    setEditingId(null);
+    setMode("create");
+  };
 
   const submit = async () => {
     setSaving(true);
     try {
-      await api.post("/auth/register", form);
-      setOpen(false);
-      setForm(blank);
+      const payload = { ...form };
+      if (payload.role === "intern") {
+        payload.required_hours = Number(payload.required_hours) || 486;
+        payload.supervisor_id = payload.supervisor_id ? Number(payload.supervisor_id) : null;
+        payload.student_id = payload.student_id || null;
+      } else {
+        payload.supervisor_id = null;
+        payload.student_id = null;
+        payload.required_hours = 0;
+      }
+      if (mode === "create") {
+        await api.post("/auth/register", payload);
+      } else {
+        await api.put(`/admin/users/${editingId}`, payload);
+      }
+      close();
       load();
     } catch (err) {
-      alert(err.response?.data?.error || "Could not create user");
+      alert(err.response?.data?.error || "Could not save user");
     } finally {
       setSaving(false);
     }
@@ -45,7 +98,7 @@ export default function AdminUsers() {
   return (
     <div className="space-y-6">
       <PageHeader title="User Management" subtitle="Create and manage administrators, supervisors, and students.">
-        <button className="btn-primary" onClick={() => setOpen(true)}>
+        <button className="btn-primary" onClick={openCreate}>
           <Plus size={16} /> Add user
         </button>
       </PageHeader>
@@ -91,9 +144,14 @@ export default function AdminUsers() {
                   <td className="px-4 py-3 text-slate-500">{u.course || u.company_name || "—"}</td>
                   <td className="px-4 py-3"><Badge status={u.status} /></td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => deactivate(u.id)} className="text-slate-400 hover:text-rose-600" title="Deactivate">
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button onClick={() => openEdit(u.id)} className="text-slate-400 hover:text-blue-600" title="Edit">
+                        <Pencil size={16} />
+                      </button>
+                      <button onClick={() => deactivate(u.id)} className="text-slate-400 hover:text-rose-600" title="Deactivate">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -104,13 +162,13 @@ export default function AdminUsers() {
 
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
-        title="Add user"
+        onClose={close}
+        title={mode === "create" ? "Add user" : "Edit user"}
         footer={
           <>
-            <button className="btn-ghost" onClick={() => setOpen(false)}>Cancel</button>
-            <button className="btn-primary" onClick={submit} disabled={saving || !form.full_name || !form.email || !form.password || !form.role}>
-              {saving ? "Creating..." : "Create"}
+            <button className="btn-ghost" onClick={close}>Cancel</button>
+            <button className="btn-primary" onClick={submit} disabled={saving || !form.full_name || !form.email || !form.role || (mode === "create" && !form.password)}>
+              {saving ? "Saving..." : (mode === "create" ? "Create" : "Save")}
             </button>
           </>
         }
@@ -127,7 +185,7 @@ export default function AdminUsers() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="label">Password</label>
+            <label className="label">Password {mode === "edit" && <span className="text-xs text-slate-400">(leave blank to keep)</span>}</label>
             <input className="input" type="password" value={form.password} onChange={set("password")} />
           </div>
           <div>
@@ -141,14 +199,67 @@ export default function AdminUsers() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
+            <label className="label">Status</label>
+            <select className="input" value={form.status} onChange={set("status")}>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label className="label">Phone</label>
+            <input className="input" value={form.phone} onChange={set("phone")} placeholder="Optional" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
             <label className="label">Department</label>
             <input className="input" value={form.department} onChange={set("department")} placeholder="Optional" />
           </div>
           <div>
-            <label className="label">{form.role === "intern" ? "Course" : "Company / Position"}</label>
-            <input className="input" value={form.course || form.company_name} onChange={form.role === "intern" ? set("course") : set("company_name")} placeholder="Optional" />
+            <label className="label">{form.role === "intern" ? "Course" : "School / Office"}</label>
+            <input className="input" value={form.role === "intern" ? form.course : form.company_name} onChange={form.role === "intern" ? set("course") : set("company_name")} placeholder="Optional" />
           </div>
         </div>
+        {form.role === "intern" && (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="label">Student ID</label>
+                <input className="input" value={form.student_id} onChange={set("student_id")} placeholder="e.g. 2024-001" />
+              </div>
+              <div>
+                <label className="label">Course</label>
+                <input className="input" value={form.course} onChange={set("course")} placeholder="e.g. BS Information Technology" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="label">Required hours</label>
+                <input className="input" type="number" value={form.required_hours} onChange={set("required_hours")} />
+              </div>
+              <div>
+                <label className="label">Supervisor</label>
+                <select className="input" value={form.supervisor_id} onChange={set("supervisor_id")}>
+                  <option value="">Select supervisor</option>
+                  {supervisors.map((s) => <option key={s.id} value={s.id}>{s.full_name} {s.company_name ? `· ${s.company_name}` : ""}</option>)}
+                </select>
+              </div>
+            </div>
+          </>
+        )}
+        {form.role === "supervisor" && (
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label">School / Office</label>
+              <input className="input" value={form.company_name} onChange={set("company_name")} placeholder="School or company name" />
+            </div>
+            <div>
+              <label className="label">Position</label>
+              <input className="input" value={form.position} onChange={set("position")} placeholder="e.g. HR Supervisor" />
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

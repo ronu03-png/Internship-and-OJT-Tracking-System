@@ -11,9 +11,10 @@ router.get("/", authRequired, (req, res) => {
   }
 
   let query = `
-    SELECT u.*, c.name AS company_name
+    SELECT u.*, c.name AS company_name, s.full_name AS supervisor_name
     FROM users u
     LEFT JOIN companies c ON c.id = u.company_id
+    LEFT JOIN users s ON s.id = u.supervisor_id
     WHERE u.role = 'intern'
   `;
   const params = [];
@@ -47,7 +48,18 @@ router.get("/:id", authRequired, (req, res) => {
   const approved = db
     .prepare("SELECT COALESCE(SUM(hours),0) AS h FROM attendance WHERE intern_id = ? AND status = 'approved'")
     .get(student.id).h;
-  res.json({ ...student, approved_hours: approved });
+  const company = student.company_id
+    ? db.prepare("SELECT name FROM companies WHERE id = ?").get(student.company_id)
+    : null;
+  const supervisor = student.supervisor_id
+    ? db.prepare("SELECT full_name FROM users WHERE id = ?").get(student.supervisor_id)
+    : null;
+  res.json({
+    ...student,
+    approved_hours: approved,
+    company_name: company?.name || null,
+    supervisor_name: supervisor?.full_name || null,
+  });
 });
 
 export default router;

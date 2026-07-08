@@ -4,7 +4,6 @@ import { Users, CalendarClock, FileText, Briefcase, UserPlus, FileCheck2, BookOp
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { StatCard, Spinner, Avatar, ProgressBar, Badge } from "../../components/ui.jsx";
-import OJTProgress from "../../components/OJTProgress.jsx";
 
 function PendingItem({ label, count, to, color }) {
   return (
@@ -56,14 +55,6 @@ export default function SupervisorDashboard() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="card p-6 lg:col-span-2">
           <h2 className="mb-4 font-semibold text-slate-800">Intern progress</h2>
-          <div className="mb-5">
-            <OJTProgress
-              completed={320}
-              required={486}
-              title="Sample Intern Progress"
-              subtitle="Preview: hours completed toward the 486-hour OJT requirement"
-            />
-          </div>
           {interns.length === 0 ? (
             <p className="text-sm text-slate-400">No interns registered under you yet.</p>
           ) : (

@@ -50,7 +50,7 @@ const STATUS_STYLES = {
   open: "bg-emerald-100 text-emerald-700 ring-emerald-200",
   closed: "bg-slate-100 text-slate-600 ring-slate-200",
   active: "bg-emerald-100 text-emerald-700 ring-emerald-200",
-  inactive: "bg-slate-100 text-slate-600 ring-slate-200",
+  inactive: "bg-rose-100 text-rose-700 ring-rose-200",
 };
 
 const STATUS_DOTS = {
@@ -64,7 +64,7 @@ const STATUS_DOTS = {
   open: "bg-emerald-500",
   closed: "bg-slate-400",
   active: "bg-emerald-500",
-  inactive: "bg-slate-400",
+  inactive: "bg-rose-500",
 };
 
 const STATUS_LABELS = {
@@ -115,6 +115,7 @@ export function Avatar({ name = "", size = "md" }) {
     sm: "h-9 w-9 text-xs",
     md: "h-11 w-11 text-sm",
     lg: "h-14 w-14 text-base",
+    xl: "h-24 w-24 text-2xl",
   };
   return (
     <div

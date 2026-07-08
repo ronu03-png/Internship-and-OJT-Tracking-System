@@ -25,22 +25,19 @@ import AdminDashboard from "./pages/admin/Dashboard.jsx";
 import AdminUsers from "./pages/admin/Users.jsx";
 import AdminAuditLogs from "./pages/admin/AuditLogs.jsx";
 import AdminSettings from "./pages/admin/Settings.jsx";
+import AdminEvaluations from "./pages/admin/Evaluations.jsx";
 
 import ManageStudents from "./pages/supervisor/Students.jsx";
+import StudentProfile from "./pages/supervisor/StudentProfile.jsx";
 import ManageCompanies from "./pages/supervisor/Companies.jsx";
 import ManagePlacements from "./pages/supervisor/Placements.jsx";
 
 import InternJournals from "./pages/intern/Journals.jsx";
-import InternWeeklyReports from "./pages/intern/WeeklyReports.jsx";
+import InternProfile from "./pages/intern/Profile.jsx";
 
 import SupervisorJournals from "./pages/supervisor/Journals.jsx";
-import SupervisorWeeklyReports from "./pages/supervisor/WeeklyReports.jsx";
 import SupervisorEvaluations from "./pages/supervisor/Evaluations.jsx";
-import SupervisorMonthlyReports from "./pages/supervisor/MonthlyReports.jsx";
-import SupervisorFinalReports from "./pages/supervisor/FinalReports.jsx";
-
-import InternMonthlyReports from "./pages/intern/MonthlyReports.jsx";
-import InternFinalReports from "./pages/intern/FinalReports.jsx";
+import SupervisorProfile from "./pages/supervisor/Profile.jsx";
 
 import Announcements from "./pages/Announcements.jsx";
 import Calendar from "./pages/Calendar.jsx";
@@ -114,18 +111,17 @@ export default function App() {
           </Protected>
         }
       />
+      <Route path="/profile" element={<Protected><RoleSwitch intern={<InternProfile />} supervisor={<SupervisorProfile />} /></Protected>} />
       <Route path="/messages" element={<Protected><Messages /></Protected>} />
       <Route path="/notifications" element={<Protected><Notifications /></Protected>} />
       <Route path="/interns" element={<Protected><SupervisorInterns /></Protected>} />
       <Route path="/users" element={<Protected><AdminUsers /></Protected>} />
       <Route path="/students" element={<Protected><ManageStudents /></Protected>} />
+      <Route path="/students/:id" element={<Protected><StudentProfile /></Protected>} />
       <Route path="/companies" element={<Protected><ManageCompanies /></Protected>} />
       <Route path="/placements" element={<Protected><ManagePlacements /></Protected>} />
       <Route path="/journals" element={<Protected><RoleSwitch intern={<InternJournals />} supervisor={<SupervisorJournals />} /></Protected>} />
-      <Route path="/weekly-reports" element={<Protected><RoleSwitch intern={<InternWeeklyReports />} supervisor={<SupervisorWeeklyReports />} /></Protected>} />
-      <Route path="/monthly-reports" element={<Protected><RoleSwitch intern={<InternMonthlyReports />} supervisor={<SupervisorMonthlyReports />} /></Protected>} />
-      <Route path="/final-reports" element={<Protected><RoleSwitch intern={<InternFinalReports />} supervisor={<SupervisorFinalReports />} /></Protected>} />
-      <Route path="/evaluations" element={<Protected><SupervisorEvaluations /></Protected>} />
+      <Route path="/evaluations" element={<Protected><RoleSwitch admin={<AdminEvaluations />} supervisor={<SupervisorEvaluations />} /></Protected>} />
       <Route path="/announcements" element={<Protected><Announcements /></Protected>} />
       <Route path="/calendar" element={<Protected><Calendar /></Protected>} />
       <Route path="/analytics" element={<Protected><Analytics /></Protected>} />

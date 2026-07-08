@@ -79,7 +79,7 @@ export default function AdminDashboard() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Users} tone="brand" label="Total Users" value={stats.total_users} />
         <StatCard icon={Users} tone="brand" label="Students" value={stats.student_count} />
-        <StatCard icon={Building2} tone="brand" label="Companies" value={stats.company_count} />
+        <StatCard icon={Building2} tone="brand" label="Schools" value={stats.company_count} />
         <StatCard icon={Briefcase} tone="brand" label="Placements" value={stats.placement_count} />
         <StatCard icon={Activity} tone="brand" label="Active Interns" value={stats.active_interns} />
         <StatCard icon={FileCheck2} tone="brand" label="Completed OJT" value={stats.completed_interns} />

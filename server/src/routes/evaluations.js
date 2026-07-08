@@ -4,8 +4,18 @@ import { authRequired, requireRole } from "../middleware/auth.js";
 
 const router = Router();
 
-// List evaluations for supervisor or intern
+// List evaluations for supervisor, admin, or intern
 router.get("/", authRequired, (req, res) => {
+  if (req.user.role === "admin") {
+    const rows = db
+      .prepare(
+        `SELECT e.*, u.full_name AS intern_name, u.course, u.company_name FROM evaluations e
+         JOIN users u ON u.id = e.intern_id
+         ORDER BY e.created_at DESC`
+      )
+      .all();
+    return res.json(rows);
+  }
   if (req.user.role === "intern") {
     const rows = db
       .prepare(

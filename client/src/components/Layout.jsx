@@ -5,13 +5,10 @@ import {
   LayoutDashboard,
   CalendarClock,
   FileText,
-  MessagesSquare,
   Users,
   GraduationCap,
   Briefcase,
   FileCheck2,
-  FileCheck,
-  Calendar as CalendarIcon,
   LogOut,
   Menu,
   X,
@@ -24,6 +21,7 @@ import {
   BookOpen,
   Star,
   Bell,
+  User,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { Avatar } from "./ui.jsx";
@@ -33,46 +31,43 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const INTERN_NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/attendance", label: "Attendance", icon: CalendarClock },
   { to: "/journals", label: "Daily Journal", icon: BookOpen },
-  { to: "/weekly-reports", label: "Weekly Report", icon: FileText },
-  { to: "/monthly-reports", label: "Monthly Report", icon: CalendarIcon },
-  { to: "/reports", label: "Narrative Reports", icon: FileText },
-  { to: "/final-reports", label: "Final Report", icon: FileCheck },
+  { to: "/reports", label: "Reports", icon: FileText },
   { to: "/requirements", label: "Requirements", icon: FileCheck2 },
   { to: "/announcements", label: "Announcements", icon: Megaphone },
-  { to: "/messages", label: "Messages", icon: MessagesSquare },
+  { to: "/profile", label: "Profile", icon: User },
 ];
 
 const SUPERVISOR_NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/openings", label: "OJT Openings", icon: Briefcase },
-  { to: "/interns", label: "My Interns", icon: Users },
-  { to: "/attendance", label: "Attendance", icon: CalendarClock },
+  { to: "/interns", label: "OJT Students", icon: Users },
   { to: "/journals", label: "Journal Review", icon: BookOpen },
-  { to: "/weekly-reports", label: "Weekly Reports", icon: FileText },
-  { to: "/monthly-reports", label: "Monthly Reports", icon: CalendarIcon },
   { to: "/reports", label: "Reports", icon: FileText },
-  { to: "/final-reports", label: "Final Reports", icon: FileCheck },
   { to: "/requirements", label: "Requirements", icon: FileCheck2 },
   { to: "/evaluations", label: "Evaluations", icon: Star },
   { to: "/students", label: "Students", icon: Users },
-  { to: "/companies", label: "Companies", icon: Building2 },
+  { to: "/companies", label: "Schools", icon: Building2 },
   { to: "/placements", label: "Placements", icon: Briefcase },
   { to: "/announcements", label: "Announcements", icon: Megaphone },
-  { to: "/messages", label: "Messages", icon: MessagesSquare },
+  { to: "/profile", label: "Profile", icon: User },
 ];
 
 const ADMIN_NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/users", label: "Users", icon: Shield },
   { to: "/students", label: "Students", icon: Users },
-  { to: "/companies", label: "Companies", icon: Building2 },
+  { to: "/attendance", label: "Attendance", icon: CalendarClock },
+  { to: "/journals", label: "Journal Review", icon: BookOpen },
+  { to: "/reports", label: "Reports", icon: FileText },
+  { to: "/requirements", label: "Requirements", icon: FileCheck2 },
+  { to: "/evaluations", label: "Evaluations", icon: Star },
+  { to: "/companies", label: "Schools", icon: Building2 },
   { to: "/placements", label: "Placements", icon: Briefcase },
   { to: "/announcements", label: "Announcements", icon: Megaphone },
   { to: "/calendar", label: "Calendar", icon: CalendarDays },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/audit-logs", label: "Audit Logs", icon: BookOpen },
+  { to: "/profile", label: "Profile", icon: User },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 

@@ -68,4 +68,15 @@ router.put("/:id", authRequired, requireRole("admin", "supervisor"), (req, res) 
   res.json(db.prepare("SELECT * FROM companies WHERE id = ?").get(row.id));
 });
 
+// Delete all companies (admin or supervisor)
+router.delete("/", authRequired, requireRole("admin", "supervisor"), (req, res) => {
+  try {
+    db.prepare("UPDATE users SET company_id = NULL WHERE company_id IS NOT NULL").run();
+    db.prepare("DELETE FROM companies").run();
+    res.json({ message: "All companies removed" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Plus, Building2, Search, ExternalLink, Users, MapPin, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import api from "../../api";
 import { Modal, Spinner, EmptyState, PageHeader, StatCard, Badge } from "../../components/ui.jsx";
+import { exportToExcel } from "../../utils/exportExcel.js";
 
 const blank = { name: "", address: "", industry: "", email: "", phone: "", website: "", department: "", description: "", available_slots: 1 };
 const PAGE_SIZE = 9;
@@ -45,39 +46,48 @@ export default function SupervisorCompanies() {
   const totalSlots = useMemo(() => (companies || []).reduce((a, c) => a + (c.available_slots || 0), 0), [companies]);
   const activeCount = useMemo(() => (companies || []).filter((c) => c.status === "active").length, [companies]);
 
-  const exportCSV = () => {
-    const rows = filtered.map((c) => [c.name, c.industry, c.address, c.email, c.phone, c.available_slots].join(","));
-    const csv = ["Name,Industry,Address,Email,Phone,Slots", ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "companies.csv"; a.click(); URL.revokeObjectURL(url);
+  const exportSchools = () => {
+    exportToExcel({
+      data: filtered,
+      headers: [
+        { key: "name", label: "Name" },
+        { key: "industry", label: "Industry" },
+        { key: "department", label: "Department" },
+        { key: "address", label: "Address" },
+        { key: "email", label: "Email" },
+        { key: "phone", label: "Phone" },
+        { key: "available_slots", label: "Slots" },
+        { key: "status", label: "Status" },
+      ],
+      filename: "schools",
+    });
   };
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Company Management" subtitle={`${filtered.length} partner companies and city offices`}>
-        <button className="btn-primary" onClick={() => setOpen(true)}><Plus size={16} /> Add company</button>
+      <PageHeader title="School Management" subtitle={`${filtered.length} schools in Sorsogon City deploying OJT students`}>
+        <button className="btn-primary" onClick={() => setOpen(true)}><Plus size={16} /> Add school</button>
       </PageHeader>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard icon={Building2} tone="brand" label="Total Companies" value={companies?.length || 0} />
-        <StatCard icon={Building2} tone="emerald" label="Active" value={activeCount} />
+        <StatCard icon={Building2} tone="brand" label="Total Schools" value={companies?.length || 0} />
+        <StatCard icon={Building2} tone="emerald" label="Active Schools" value={activeCount} />
         <StatCard icon={Users} tone="amber" label="Available Slots" value={totalSlots} sub="total openings" />
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <div className="relative"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" /><input className="input pl-9" placeholder="Search companies..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} /></div>
+        <div className="relative"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" /><input className="input pl-9" placeholder="Search schools..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} /></div>
         <select className="input" value={industryFilter} onChange={(e) => { setIndustryFilter(e.target.value); setPage(1); }}>
           <option value="">All industries</option>
           {industries.map((i) => <option key={i} value={i}>{i}</option>)}
         </select>
-        <button onClick={exportCSV} className="btn-ghost"><Download size={16} /> Export</button>
+        <button onClick={exportSchools} className="btn-ghost"><Download size={16} /> Export</button>
       </div>
 
       {companies === null ? (
         <Spinner />
       ) : filtered.length === 0 ? (
-        <div className="card"><EmptyState icon={Building2} title="No companies found" hint="Add the first company or city office." /></div>
+        <div className="card"><EmptyState icon={Building2} title="No schools found" hint="Add the first school or learning institution." /></div>
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -104,7 +114,7 @@ export default function SupervisorCompanies() {
             ))}
           </div>
           <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3">
-            <p className="text-xs text-slate-500">Showing {paged.length} of {filtered.length} companies</p>
+            <p className="text-xs text-slate-500">Showing {paged.length} of {filtered.length} schools</p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-lg border border-slate-200 p-1.5 hover:bg-slate-50 disabled:opacity-40"><ChevronLeft size={16} /></button>
               <span className="text-xs font-medium text-slate-600">Page {page} of {pageCount}</span>
@@ -117,7 +127,7 @@ export default function SupervisorCompanies() {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="Add company"
+        title="Add school"
         footer={
           <>
             <button className="btn-ghost" onClick={() => setOpen(false)}>Cancel</button>
@@ -128,7 +138,7 @@ export default function SupervisorCompanies() {
         }
       >
         <div>
-          <label className="label">Company name</label>
+          <label className="label">School name</label>
           <input className="input" value={form.name} onChange={set("name")} />
         </div>
         <div className="grid grid-cols-2 gap-3">

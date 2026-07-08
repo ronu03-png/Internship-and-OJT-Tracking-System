@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Briefcase, Plus, CheckCircle2, XCircle, Search } from "lucide-react";
 import api from "../../api";
 import { Badge, Modal, Spinner, EmptyState, PageHeader, Avatar } from "../../components/ui.jsx";
@@ -49,7 +50,7 @@ export default function SupervisorPlacements() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Internship Placements" subtitle="Assign students to companies and supervisors.">
+      <PageHeader title="Internship Placements" subtitle="Assign students to schools and supervisors.">
         <button className="btn-primary" onClick={() => setOpen(true)}><Plus size={16} /> Assign</button>
       </PageHeader>
 
@@ -68,14 +69,15 @@ export default function SupervisorPlacements() {
                 <div className="flex items-center gap-3">
                   <Avatar name={p.student_name} size="sm" />
                   <div>
-                    <h3 className="font-semibold text-slate-800">{p.student_name}</h3>
+                    <Link to={`/students/${p.student_id}`} className="font-semibold text-slate-800 hover:text-blue-600 hover:underline">{p.student_name}</Link>
                     <p className="text-xs text-slate-400">{p.student_course}</p>
                   </div>
                 </div>
                 <Badge status={p.status} />
               </div>
               <div className="mb-3 grid gap-1 text-sm text-slate-600">
-                <p><strong className="text-slate-800">Company:</strong> {p.company_name || "—"}</p>
+                <p><strong className="text-slate-800">School in Sorsogon City:</strong> {p.company_name || "—"}</p>
+                <p><strong className="text-slate-800">Department / Course:</strong> {p.student_course || "—"}</p>
                 <p><strong className="text-slate-800">Supervisor:</strong> {p.supervisor_name || "—"}</p>
                 <p><strong className="text-slate-800">Period:</strong> {p.start_date || "—"} to {p.end_date || "—"}</p>
               </div>
@@ -106,9 +108,9 @@ export default function SupervisorPlacements() {
           </select>
         </div>
         <div>
-          <label className="label">Company / Office</label>
+          <label className="label">School / Office</label>
           <select className="input" value={form.company_id} onChange={(e) => setForm({ ...form, company_id: e.target.value })}>
-            <option value="">Select company</option>
+            <option value="">Select school</option>
             {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>

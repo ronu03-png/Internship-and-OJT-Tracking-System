@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FileCheck2, ExternalLink, Search, Download } from "lucide-react";
 import api from "../../api";
 import { Badge, Modal, Spinner, EmptyState, PageHeader } from "../../components/ui.jsx";
+import { exportToExcel } from "../../utils/exportExcel.js";
 
 export default function SupervisorRequirements() {
   const [rows, setRows] = useState(null);
@@ -32,9 +33,17 @@ export default function SupervisorRequirements() {
     return (filter === "all" || r.status === filter) && (r.name.toLowerCase().includes(q) || (r.intern_name || "").toLowerCase().includes(q));
   }), [rows, filter, search]);
 
-  const exportCSV = () => {
-    const csv = ["Name,Intern,Status,Note", ...filtered.map((r) => [r.name, r.intern_name, r.status, `"${(r.note || "").replace(/"/g, "'")}"`].join(","))].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = "requirements.csv"; a.click(); URL.revokeObjectURL(url);
+  const exportRequirements = () => {
+    exportToExcel({
+      data: filtered,
+      headers: [
+        { key: "name", label: "Name" },
+        { key: "intern_name", label: "Intern" },
+        { key: "status", label: "Status" },
+        { key: "note", label: "Note" },
+      ],
+      filename: "requirements",
+    });
   };
 
   return (
@@ -49,7 +58,7 @@ export default function SupervisorRequirements() {
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
           </select>
-          <button onClick={exportCSV} className="btn-ghost"><Download size={16} /> Export</button>
+          <button onClick={exportRequirements} className="btn-ghost"><Download size={16} /> Export</button>
         </div>
       </PageHeader>
 
